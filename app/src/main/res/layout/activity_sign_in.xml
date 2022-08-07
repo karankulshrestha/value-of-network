@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/singin"
+    tools:context=".SignIn">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="50dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:layout_editor_absoluteX="10dp">
+
+        <TextView
+            android:id="@+id/vonTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="10dp"
+            android:text="VON"
+            android:textColor="#555EBC"
+            android:textSize="48sp" />
+
+        <TextView
+            android:id="@+id/welcomeback"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Welcome Back!"
+            android:textColor="#FFFFFF"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/signupEmail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Email"
+            android:textColor="#BAFFFFFF"
+            android:textSize="24sp" />
+
+        <EditText
+            android:id="@+id/signInEmailField"
+            android:layout_width="259dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/editbottomline"
+            android:ems="10"
+            android:hint="Enter your email"
+            android:inputType="textEmailAddress"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#31FFFFFF"
+            android:textCursorDrawable="@drawable/cursor_drawable" />
+
+        <TextView
+            android:id="@+id/passField"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Password"
+            android:textColor="#BAFFFFFF"
+            android:textSize="24sp" />
+
+        <LinearLayout
+            android:layout_width="358dp"
+            android:layout_height="67dp"
+            android:layout_weight="0"
+            android:orientation="horizontal">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="260dp"
+                android:layout_height="match_parent"
+                android:paddingLeft="-12dp"
+                app:boxBackgroundMode="none"
+                android:hint=" "
+                app:passwordToggleEnabled="true"
+                app:passwordToggleTint="#FAFAFA">
+
+                <EditText
+                    android:id="@+id/signInPassword"
+                    android:layout_width="272dp"
+                    android:layout_height="54dp"
+                    android:layout_marginTop="20dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@drawable/editbottomline"
+                    android:ems="10"
+                    android:hint="Enter your password"
+                    android:textCursorDrawable="@drawable/cursor_drawable"
+                    android:textColorHint="#34F4EFEF"
+                    android:inputType="textPassword"
+                    android:textColor="#FFFFFF" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/forgotpass"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Forgot password ?"
+            android:textColor="#555EBC"
+            android:textSize="18sp" />
+
+        <Button
+            android:id="@+id/signInBtn"
+            android:layout_width="158dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dp"
+            android:backgroundTint="#3E4489"
+            android:text="Sign in"
+            android:textAllCaps="false"
+            android:textSize="24sp"
+            app:cornerRadius="70dp"
+            app:strokeColor="#3E4489"
+            app:strokeWidth="3dp" />
+
+        <Button
+            android:id="@+id/signUpBtn"
+            android:layout_width="158dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="20dp"
+            android:backgroundTint="#003E4489"
+            android:paddingBottom="7dp"
+            android:text="Sign up"
+            android:textAllCaps="false"
+            android:textSize="24sp"
+            app:cornerRadius="70dp"
+            app:strokeColor="#555EBC"
+            app:strokeWidth="2dp" />
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

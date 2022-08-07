@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#242850</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="albumColorPrimary">#2196F3</color>
+    <color name="albumColorPrimaryDark">#1E88E5</color>
+    <color name="albumColorPrimaryBlack">#2B2B2B</color>
+
+    <color name="albumPageLight">#FFF</color>
+    <color name="albumTransparent">#0000</color>
+
+    <color name="albumFontHint">#808080</color>
+    <color name="albumFontLight">#FFF</color>
+    <color name="albumFontDark">#333</color>
+
+    <color name="albumIconDark">#333</color>
+    <color name="albumLoadingDark">#333</color>
+    <color name="albumSelectorNormal">#E0E0E0</color>
+
+    <color name="albumSheetBottom">#992B2B2B</color>
+    <color name="albumSheetLayer">#EE2B2B2B</color>
+</resources>

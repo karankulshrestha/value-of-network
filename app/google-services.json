@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "637634565451",
+    "project_id": "value-of-network",
+    "storage_bucket": "value-of-network.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:637634565451:android:3b16817d4e23d5643d44ce",
+        "android_client_info": {
+          "package_name": "com.karankulx.von"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "637634565451-02d8qjc9h81anvoa4he92pmjdsnv7kc2.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD9qecwuv3-VJ89vUmcfiY1yP1_ZECAvTA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "637634565451-02d8qjc9h81anvoa4he92pmjdsnv7kc2.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

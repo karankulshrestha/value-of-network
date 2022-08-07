@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/singin"
+    tools:context=".SingUp">
+
+
+
+    <LinearLayout
+        android:layout_width="416dp"
+        android:layout_height="731dp"
+        android:orientation="vertical"
+        android:padding="50dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/VonTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="VON"
+            android:textColor="#555EBC"
+            android:textSize="40sp" />
+
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Sign up"
+            android:textColor="#FFFFFF"
+            android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/signupEmail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="28dp"
+            android:text="Email"
+            android:textColor="#BAFFFFFF"
+            android:textSize="24sp" />
+
+        <EditText
+            android:id="@+id/SingupPassField"
+            android:layout_width="325dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:background="@drawable/editbottomline"
+            android:textCursorDrawable="@drawable/cursor_drawable"
+            android:ems="10"
+            android:hint="Enter your email"
+            android:inputType="textEmailAddress"
+            android:padding="10dp"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#31FFFFFF" />
+
+        <TextView
+            android:id="@+id/passHead"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="2dp"
+            android:text="Password"
+            android:textColor="#B4FFFFFF"
+            android:textSize="24sp" />
+
+        <LinearLayout
+            android:layout_width="366dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="317dp"
+                android:layout_height="87dp"
+                android:paddingLeft="-12dp"
+                android:hint=" "
+                app:boxBackgroundColor="#00FFFFFF"
+                app:boxBackgroundMode="none"
+                app:passwordToggleEnabled="true"
+                app:passwordToggleTint="#FAFAFA"
+                app:placeholderTextColor="#FBFBFB"
+                tools:ignore="MissingConstraints"
+                tools:layout_editor_absoluteX="92dp"
+                tools:layout_editor_absoluteY="248dp">
+
+                <EditText
+                    android:id="@+id/editTextTextPassword2"
+                    android:layout_width="match_parent"
+                    android:layout_height="54dp"
+                    android:layout_marginTop="20dp"
+                    android:textCursorDrawable="@drawable/cursor_drawable"
+                    android:layout_marginBottom="10dp"
+                    android:hint="Enter your password"
+                    android:textColorHint="#34F4EFEF"
+                    android:background="@drawable/editbottomline"
+                    android:ems="10"
+                    android:inputType="textPassword"
+                    android:textColor="#FFFFFF" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/repass"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
+            android:text="Re-enter Password"
+            android:textColor="#BAFFFFFF"
+            android:textSize="24sp" />
+
+        <LinearLayout
+            android:layout_width="362dp"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="323dp"
+                android:layout_height="87dp"
+                android:paddingLeft="-12dp"
+                android:hint=" "
+                app:boxBackgroundColor="#00FFFFFF"
+                app:boxBackgroundMode="none"
+                app:passwordToggleEnabled="true"
+                app:passwordToggleTint="#FAFAFA"
+                app:placeholderTextColor="#FBFBFB"
+                tools:ignore="MissingConstraints"
+                tools:layout_editor_absoluteX="92dp"
+                tools:layout_editor_absoluteY="248dp">
+
+                <EditText
+                    android:id="@+id/editTextTextPassword3"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:layout_marginTop="20dp"
+                    android:hint="Enter your password"
+                    android:textCursorDrawable="@drawable/cursor_drawable"
+                    android:textColorHint="#34F4EFEF"
+                    android:layout_marginBottom="10dp"
+                    android:background="@drawable/editbottomline"
+                    android:ems="10"
+                    android:inputType="textPassword"
+                    android:textColor="#FFFFFF" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/continueBtn"
+            android:layout_width="158dp"
+            android:layout_height="60dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="10dp"
+            android:backgroundTint="#3E4489"
+            android:text="Continue"
+            android:textAllCaps="false"
+            android:textSize="24sp"
+            app:cornerRadius="70dp"
+            app:strokeColor="#3E4489"
+            app:strokeWidth="3dp" />
+
+        <LinearLayout
+            android:layout_width="291dp"
+            android:layout_height="34dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="60dp"
+            android:orientation="horizontal"
+            android:padding="-5dp">
+
+            <TextView
+                android:id="@+id/textView5"
+                android:layout_width="239dp"
+                android:layout_height="wrap_content"
+                android:text="Already have an account?"
+                android:textColor="#FFFFFF"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/loginbtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Login"
+                android:textColor="#555EBC"
+                android:textSize="20sp" />
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

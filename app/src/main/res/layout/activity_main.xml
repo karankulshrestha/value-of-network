@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/main"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/von"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="VALUE OF NETWORK"
+        android:textColor="#FFFFFF"
+        android:textSize="34sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.594" />
+
+    <Button
+        android:id="@+id/signIn"
+        android:layout_width="190dp"
+        android:layout_height="64dp"
+        android:backgroundTint="#3E4489"
+        android:text="Sign in"
+        android:textAllCaps="false"
+        android:textSize="24sp"
+        app:cornerRadius="70dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/von"
+        app:layout_constraintHorizontal_bias="0.488"
+        app:layout_constraintStart_toStartOf="@+id/von"
+        app:layout_constraintTop_toBottomOf="@+id/von"
+        app:layout_constraintVertical_bias="0.088"
+        app:strokeColor="#3E4489"
+        app:strokeWidth="3dp" />
+
+    <Button
+        android:id="@+id/signUp"
+        android:layout_width="187dp"
+        android:layout_height="67dp"
+        android:backgroundTint="#003E4489"
+        android:padding="2dp"
+        android:text="Sign up"
+        android:textAllCaps="false"
+        android:textSize="24sp"
+        app:cornerRadius="70dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/von"
+        app:layout_constraintHorizontal_bias="0.492"
+        app:layout_constraintStart_toStartOf="@+id/von"
+        app:layout_constraintTop_toBottomOf="@+id/von"
+        app:layout_constraintVertical_bias="0.454"
+        app:strokeColor="#3E4489"
+        app:strokeWidth="2dp" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="361dp"
+        android:layout_height="53dp"
+        android:text="By signing in you accept our Terms of use and Privacy Policy"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/signUp"
+        app:layout_constraintVertical_bias="0.516" />
+</androidx.constraintlayout.widget.ConstraintLayout>

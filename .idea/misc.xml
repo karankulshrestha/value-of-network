@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DesignSurface">
+    <option name="filePathToZoomLevelMap">
+      <map>
+        <entry key="..\:/Android/SDK/platforms/android-32/data/res/layout/simple_list_item_1.xml" value="0.25" />
+        <entry key="..\:/Android/von/app/src/main/res/drawable/cursor_drawable.xml" value="0.2225" />
+        <entry key="..\:/Android/von/app/src/main/res/drawable/editbottomline.xml" value="0.2225" />
+        <entry key="..\:/Android/von/app/src/main/res/layout/activity_home.xml" value="0.25" />
+        <entry key="..\:/Android/von/app/src/main/res/layout/activity_main.xml" value="0.264" />
+        <entry key="..\:/Android/von/app/src/main/res/layout/activity_password_reset.xml" value="0.264" />
+        <entry key="..\:/Android/von/app/src/main/res/layout/activity_phone_verification.xml" value="0.1" />
+        <entry key="..\:/Android/von/app/src/main/res/layout/activity_profile_page.xml" value="0.2" />
+        <entry key="..\:/Android/von/app/src/main/res/layout/activity_sign_in.xml" value="0.264" />
+        <entry key="..\:/Android/von/app/src/main/res/layout/activity_sing_up.xml" value="0.264" />
+        <entry key="..\:/Android/von/app/src/main/res/layout/activity_splash_screen.xml" value="0.264" />
+        <entry key="..\:/Users/This PC/Desktop/von/app/matisse/src/main/res/layout/activity_matisse.xml" value="0.25" />
+        <entry key="..\:/Users/This PC/Desktop/von/app/matisse/src/main/res/layout/media_grid_content.xml" value="0.25" />
+        <entry key="..\:/Users/This PC/Desktop/von/app/matisse/src/main/res/layout/media_grid_item.xml" value="0.25" />
+        <entry key="..\:/Users/This PC/Desktop/von/app/src/main/res/drawable/camerafragment.xml" value="0.1795" />
+        <entry key="..\:/Users/This PC/Desktop/von/app/src/main/res/drawable/custom_switch.xml" value="0.1965" />
+        <entry key="..\:/Users/This PC/Desktop/von/app/src/main/res/drawable/editbottomline.xml" value="0.1795" />
+        <entry key="..\:/Users/This PC/Desktop/von/app/src/main/res/drawable/listgrad.xml" value="0.1795" />
+        <entry key="..\:/Users/This PC/Desktop/von/app/src/main/res/drawable/receive_drawable.xml" value="0.1965" />
+        <entry key="..\:/Users/This PC/Desktop/von/app/src/main/res/drawable/send_btn_bg.xml" value="0.1795" />
+        <entry key="..\:/Users/This PC/Desktop/von/app/src/main/res/drawable/sent_drawable.xml" value="0.2" />
+        <entry key="..\:/Users/This PC/Desktop/von/app/src/main/res/drawable/textbox_outline.xml" value="0.1795" />
+        <entry key="..\:/Users/This PC/Desktop/von/app/src/main/res/layout/activity_chat.xml" value="0.264" />
+        <entry key="..\:/Users/This PC/Desktop/von/app/src/main/res/layout/activity_contact_sync.xml" value="0.25" />
+        <entry key="..\:/Users/This PC/Desktop/von/app/src/main/res/layout/activity_full_screen_image.xml" value="0.25" />
+        <entry key="..\:/Users/This PC/Desktop/von/app/src/main/res/layout/activity_full_screen_image1.xml" value="0.2359375" />
+        <entry key="..\:/Users/This PC/Desktop/von/app/src/main/res/layout/activity_group_building.xml" value="0.25" />
+        <entry key="..\:/Users/This PC/Desktop/von/app/src/main/res/layout/activity_group_chat.xml" value="0.25" />
+        <entry key="..\:/Users/This PC/Desktop/von/app/src/main/res/layout/activity_home.xml" value="0.26776649746192893" />
+        <entry key="..\:/Users/This PC/Desktop/von/app/src/main/res/layout/activity_in_profile.xml" value="0.2" />
+        <entry key="..\:/Users/This PC/Desktop/von/app/src/main/res/layout/activity_main.xml" value="0.25" />
+        <entry key="..\:/Users/This PC/Desktop/von/app/src/main/res/layout/activity_phone_verification.xml" value="0.25" />
+        <entry key="..\:/Users/This PC/Desktop/von/app/src/main/res/layout/activity_profile_page.xml" value="0.25" />
+        <entry key="..\:/Users/This PC/Desktop/von/app/src/main/res/layout/activity_sign_in.xml" value="0.25" />
+        <entry key="..\:/Users/This PC/Desktop/von/app/src/main/res/layout/activity_sing_up.xml" value="0.25" />
+        <entry key="..\:/Users/This PC/Desktop/von/app/src/main/res/layout/camfragment.xml" value="0.24895833333333334" />
+        <entry key="..\:/Users/This PC/Desktop/von/app/src/main/res/layout/fragment_chats.xml" value="0.264" />
+        <entry key="..\:/Users/This PC/Desktop/von/app/src/main/res/layout/fragment_group.xml" value="0.25" />
+        <entry key="..\:/Users/This PC/Desktop/von/app/src/main/res/layout/fragment_sheets.xml" value="0.25" />
+        <entry key="..\:/Users/This PC/Desktop/von/app/src/main/res/layout/full_image_viewer.xml" value="0.25" />
+        <entry key="..\:/Users/This PC/Desktop/von/app/src/main/res/layout/item_receive.xml" value="0.264" />
+        <entry key="..\:/Users/This PC/Desktop/von/app/src/main/res/layout/item_send.xml" value="0.264" />
+        <entry key="..\:/Users/This PC/Desktop/von/app/src/main/res/layout/row_conversation.xml" value="0.25" />
+        <entry key="..\:/Users/This PC/Desktop/von/app/src/main/res/layout/toolbar_file.xml" value="0.24895833333333334" />
+        <entry key="..\:/Users/This PC/Desktop/von/app/src/main/res/layout/uri_item.xml" value="0.25" />
+        <entry key="..\:/Users/This PC/Desktop/von/app/src/main/res/menu/chat_menu.xml" value="0.24895833333333334" />
+        <entry key="..\:/Users/This PC/Desktop/von/app/src/main/res/menu/chatmenu.xml" value="0.24895833333333334" />
+        <entry key="..\:/Users/This PC/Desktop/von/app/src/main/res/menu/context_menu.xml" value="0.25" />
+        <entry key="..\:/Users/This PC/Desktop/von/app/src/main/res/menu/menu.xml" value="0.25" />
+        <entry key="..\:/Users/This PC/Desktop/von/app/src/main/res/menu/search_menu.xml" value="0.25" />
+        <entry key="..\:/Users/This PC/Desktop/von/app/src/main/res/xml/file_paths.xml" value="0.25" />
+        <entry key="..\:/Users/karan/Desktop/von/app/src/main/res/layout/activity_group_building.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/karan/Desktop/von/app/src/main/res/layout/activity_home.xml" value="0.22826086956521738" />
+        <entry key="..\:/Users/karan/Desktop/von/app/src/main/res/layout/activity_main.xml" value="0.22826086956521738" />
+        <entry key="..\:/Users/karan/Desktop/von/app/src/main/res/menu/context_menu.xml" value="0.25416666666666665" />
+      </map>
+    </option>
+  </component>
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="Android Studio default JDK" project-jdk-type="JavaSDK">
+    <output url="file://$PROJECT_DIR$/build/classes" />
+  </component>
+  <component name="ProjectType">
+    <option name="id" value="Android" />
+  </component>
+</project>

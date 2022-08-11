@@ -41,6 +41,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Random;
 
 public class GroupBuildingActivity extends AppCompatActivity {
@@ -117,6 +118,26 @@ public class GroupBuildingActivity extends AppCompatActivity {
                 if (gName.length() != 0) {
                     if (gSum.length() != 0) {
                         if (selectedImage != null) {
+
+                            database.getReference().child("users").addValueEventListener(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                        Users user = dataSnapshot.getValue(Users.class);
+                                        String mUid = user.getUid();
+                                        if (mUid.equals(uid)) {
+                                            gUsers.add(user);
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
+
+
                             Calendar calender = Calendar.getInstance();
                             Bitmap bmp = null;
                             try {

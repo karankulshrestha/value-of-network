@@ -61,7 +61,7 @@
             android:textSize="27sp" />
 
         <EditText
-            android:id="@+id/gName"
+            android:id="@+id/gpName"
             android:layout_width="315dp"
             android:layout_height="48dp"
             android:layout_margin="5dp"

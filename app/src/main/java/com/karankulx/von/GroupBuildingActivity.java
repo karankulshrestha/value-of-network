@@ -34,6 +34,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.karankulx.von.Fragments.GroupFragment;
+import com.karankulx.von.Models.Groups;
 import com.karankulx.von.Models.Users;
 import com.karankulx.von.databinding.ActivityGroupBuildingBinding;
 
@@ -50,12 +51,11 @@ public class GroupBuildingActivity extends AppCompatActivity {
     public FirebaseDatabase database;
     Uri selectedImage;
     public ArrayList<Users> gUsers;
-    public String uid;
-    public String groupName, groupSummary;
+    public String uid, filePath;
+    public String groupName, groupSummary, rand;
     ProgressDialog progressDialog;
-    private TextView gName, gSum;
     public FirebaseStorage storage;
-    public DatabaseReference mDatabase;
+    public StorageReference reference;
     public ActivityResultLauncher<Intent> startForResult;
 
 
@@ -67,8 +67,6 @@ public class GroupBuildingActivity extends AppCompatActivity {
         FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         uid = currentFirebaseUser.getUid();
 
-        gName = binding.gName;
-        gSum = binding.gSum;
         progressDialog = new ProgressDialog(this);
         progressDialog.setTitle("creating group..");
         progressDialog.setMessage("please wait..");
@@ -85,7 +83,6 @@ public class GroupBuildingActivity extends AppCompatActivity {
 
 
         database = FirebaseDatabase.getInstance();
-        mDatabase = database.getReference();
 
         startForResult = registerForActivityResult
                 (new ActivityResultContracts.StartActivityForResult(), new ActivityResultCallback<ActivityResult>() {
@@ -112,11 +109,11 @@ public class GroupBuildingActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 progressDialog.show();
-                String rand = getRandomString(10);
-                groupName = gName.getText().toString();
-                groupSummary = gSum.getText().toString();
-                if (gName.length() != 0) {
-                    if (gSum.length() != 0) {
+                rand = getRandomString(10);
+                groupName = binding.gpName.getText().toString();
+                groupSummary = binding.gSum.getText().toString();
+                if (groupName.length() != 0) {
+                    if (groupSummary.length() != 0) {
                         if (selectedImage != null) {
 
                             database.getReference().child("users").addValueEventListener(new ValueEventListener() {
@@ -145,7 +142,7 @@ public class GroupBuildingActivity extends AppCompatActivity {
                                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                                 bmp.compress(Bitmap.CompressFormat.JPEG, 25, baos);
                                 byte[] data = baos.toByteArray();
-                                StorageReference reference = storage.getReference().child("groups").child("profile-photos").child(calender.getTimeInMillis() + "");
+                                reference = storage.getReference().child("groups").child("profile-photos").child(calender.getTimeInMillis() + "");
                                 reference.putBytes(data).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                                     @Override
                                     public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
@@ -153,22 +150,17 @@ public class GroupBuildingActivity extends AppCompatActivity {
                                             reference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
                                                 @Override
                                                 public void onSuccess(Uri uri) {
-                                                    String filePath = uri.toString();
+                                                    filePath = uri.toString();
                                                     Glide.with(GroupBuildingActivity.this).load(filePath).diskCacheStrategy(DiskCacheStrategy.ALL)
                                                             .into(binding.profileImage);
 
-                                                    for (Users user : gUsers) {
-                                                        mDatabase.child("groups").child(uid).child(groupName + "-" + rand).child("group Name").setValue(groupName);
-                                                        mDatabase.child("groups").child(uid).child(groupName + "-" + rand).child("group Summary").setValue(groupSummary);
-                                                        mDatabase.child("groups").child(uid).child(groupName + "-" + rand).child("group profile").setValue(filePath);
-                                                        mDatabase.child("groups").child(uid).child(groupName + "-" + rand).child("group Members").push().setValue(user);
-                                                        Toast.makeText(GroupBuildingActivity.this, "group created", Toast.LENGTH_SHORT).show();
-                                                        Intent mainIntent = new Intent(GroupBuildingActivity.this, HomeActivity.class);
-                                                        mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                                        Log.d("james420", String.valueOf(selectedImage));
-                                                        startActivity(mainIntent);
-                                                    }
-
+                                                    Groups group = new Groups(groupName, groupSummary, filePath, gUsers);
+                                                    database.getReference().child("groups").child(uid).child(groupName + "-" + rand).setValue(group);
+                                                    Toast.makeText(GroupBuildingActivity.this, "group created", Toast.LENGTH_SHORT).show();
+                                                    Intent mainIntent = new Intent(GroupBuildingActivity.this, HomeActivity.class);
+                                                    mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                                    Log.d("james420", String.valueOf(selectedImage));
+                                                    startActivity(mainIntent);
                                                     progressDialog.dismiss();
 
                                                 }

@@ -15,6 +15,8 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.view.View;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -56,6 +58,8 @@ public class GroupBuildingActivity extends AppCompatActivity {
     ProgressDialog progressDialog;
     public FirebaseStorage storage;
     public StorageReference reference;
+    public boolean groupCheck;
+    public Switch sw;
     public ActivityResultLauncher<Intent> startForResult;
 
 
@@ -66,6 +70,20 @@ public class GroupBuildingActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
         FirebaseUser currentFirebaseUser = FirebaseAuth.getInstance().getCurrentUser();
         uid = currentFirebaseUser.getUid();
+        groupCheck = false;
+
+        sw = (Switch) findViewById(R.id.switch1);
+
+        sw.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean isChecked) {
+                if (isChecked) {
+                    groupCheck = true;
+                } else {
+                    groupCheck = false;
+                }
+            }
+        });
 
         progressDialog = new ProgressDialog(this);
         progressDialog.setTitle("creating group..");
@@ -154,12 +172,12 @@ public class GroupBuildingActivity extends AppCompatActivity {
                                                     Glide.with(GroupBuildingActivity.this).load(filePath).diskCacheStrategy(DiskCacheStrategy.ALL)
                                                             .into(binding.profileImage);
 
-                                                    Groups group = new Groups(groupName, groupSummary, filePath, gUsers);
+                                                    Groups group = new Groups(groupName, groupSummary, filePath, groupCheck, gUsers );
                                                     database.getReference().child("groups").child(uid).child(groupName + "-" + rand).setValue(group);
                                                     Toast.makeText(GroupBuildingActivity.this, "group created", Toast.LENGTH_SHORT).show();
                                                     Intent mainIntent = new Intent(GroupBuildingActivity.this, HomeActivity.class);
                                                     mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                                    Log.d("james420", String.valueOf(selectedImage));
+                                                    Log.d("james420", String.valueOf(groupCheck));
                                                     startActivity(mainIntent);
                                                     progressDialog.dismiss();
 

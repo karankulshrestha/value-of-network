@@ -4,22 +4,33 @@ import java.util.ArrayList;
 
 public class Groups {
     public String gName, gSummary, gProfile;
+    public boolean groupType;
     public ArrayList<Users> user;
 
     public Groups() {
     }
 
-    public Groups(String gName, String gSummary, String gProfile) {
+    public Groups(String gName, String gSummary, String gProfile, boolean groupType) {
         this.gName = gName;
         this.gSummary = gSummary;
         this.gProfile = gProfile;
+        this.groupType = groupType;
     }
 
-    public Groups(String gName, String gSummary, String gProfile, ArrayList<Users> user) {
+    public Groups(String gName, String gSummary, String gProfile, boolean groupType, ArrayList<Users> user) {
         this.gName = gName;
         this.gSummary = gSummary;
         this.gProfile = gProfile;
         this.user = user;
+        this.groupType = groupType;
+    }
+
+    public boolean isGroupType() {
+        return groupType;
+    }
+
+    public void setGroupType(boolean groupType) {
+        this.groupType = groupType;
     }
 
     public String getgName() {

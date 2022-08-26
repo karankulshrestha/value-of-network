@@ -8,11 +8,15 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 import com.karankulx.von.Models.Groups;
 import com.karankulx.von.Models.Users;
 import com.karankulx.von.R;
+import com.karankulx.von.databinding.GroupConversationBinding;
 import com.karankulx.von.databinding.RowConversationBinding;
 
 import java.util.ArrayList;
@@ -39,6 +43,12 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupViewHol
     @Override
     public void onBindViewHolder(@NonNull GroupViewHolder holder, int position) {
         Groups group = groups.get(position);
+        RequestOptions myOptions = new RequestOptions()
+                .override(100, 100);
+        Glide.with(context).asBitmap()
+                .apply(myOptions)
+                .load(group.gProfile).
+                diskCacheStrategy(DiskCacheStrategy.ALL).into(holder.binding.profileImage);
         holder.binding.chaterName.setText(group.gName);
     }
 
@@ -49,11 +59,11 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupViewHol
 
     public class GroupViewHolder extends RecyclerView.ViewHolder {
 
-        RowConversationBinding binding;
+        GroupConversationBinding binding;
 
         public GroupViewHolder(@NonNull View itemView) {
             super(itemView);
-            binding = RowConversationBinding.bind(itemView);
+            binding = GroupConversationBinding.bind(itemView);
         }
     }
 }

@@ -45,18 +45,18 @@ public class GroupFragment extends Fragment {
         firebaseAuth = FirebaseAuth.getInstance();
         uid = firebaseAuth.getUid();
 
-
-
         GroupAdapter adapter = new GroupAdapter(getContext(), groups);
         binding.chatRecyclerview.setAdapter(adapter);
 
         database.getReference().child("groups").child(uid).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                groups.clear();
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     Groups group = dataSnapshot.getValue(Groups.class);
                     groups.add(group);
                 }
+                adapter.notifyDataSetChanged();
             }
 
             @Override

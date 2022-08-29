@@ -2,24 +2,19 @@ package com.karankulx.von.Fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.annotation.FontRes;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import com.google.android.exoplayer2.extractor.ts.DtsReader;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
-//import com.karankulx.von.Adapter.GroupAdapter;
 import com.google.firebase.database.ValueEventListener;
 import com.karankulx.von.Adapter.GroupAdapter;
-import com.karankulx.von.Adapter.UsersAdapter;
 import com.karankulx.von.ContactSync;
 import com.karankulx.von.Models.Groups;
 import com.karankulx.von.Models.Users;

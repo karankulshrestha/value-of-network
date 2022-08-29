@@ -3,34 +3,44 @@ package com.karankulx.von.Models;
 import java.util.ArrayList;
 
 public class Groups {
-    public String gName, gSummary, gProfile;
-    public boolean groupType;
+    public String gName, gSummary, gProfile, groupCreator;
+    public boolean isPrivate;
     public ArrayList<Users> user;
 
     public Groups() {
     }
 
-    public Groups(String gName, String gSummary, String gProfile, boolean groupType) {
+    public Groups(String gName, String gSummary, String gProfile, String groupCreator, boolean isPrivate) {
         this.gName = gName;
         this.gSummary = gSummary;
         this.gProfile = gProfile;
-        this.groupType = groupType;
+        this.isPrivate = isPrivate;
+        this.groupCreator = groupCreator;
     }
 
-    public Groups(String gName, String gSummary, String gProfile, boolean groupType, ArrayList<Users> user) {
+    public Groups(String gName, String gSummary, String gProfile, String groupCreator, boolean isPrivate, ArrayList<Users> user) {
         this.gName = gName;
         this.gSummary = gSummary;
         this.gProfile = gProfile;
         this.user = user;
-        this.groupType = groupType;
+        this.isPrivate = isPrivate;
+        this.groupCreator = groupCreator;
+    }
+
+    public String getGroupCreator() {
+        return groupCreator;
+    }
+
+    public void setGroupCreator(String groupCreator) {
+        this.groupCreator = groupCreator;
     }
 
     public boolean isGroupType() {
-        return groupType;
+        return isPrivate;
     }
 
     public void setGroupType(boolean groupType) {
-        this.groupType = groupType;
+        this.isPrivate = groupType;
     }
 
     public String getgName() {

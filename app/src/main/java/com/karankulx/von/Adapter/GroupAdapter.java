@@ -1,6 +1,7 @@
 package com.karankulx.von.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,12 +19,14 @@ import com.karankulx.von.Models.Users;
 import com.karankulx.von.R;
 import com.karankulx.von.databinding.GroupConversationBinding;
 import com.karankulx.von.databinding.RowConversationBinding;
+import com.karankulx.von.groupChatActivity;
 
 import java.util.ArrayList;
 
 public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupViewHolder>{
 
     Context context;
+    public Groups group;
     ArrayList<Groups> groups;
 
     public GroupAdapter(Context context, ArrayList<Groups> groups) {
@@ -42,7 +45,7 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupViewHol
 
     @Override
     public void onBindViewHolder(@NonNull GroupViewHolder holder, int position) {
-        Groups group = groups.get(position);
+        group = groups.get(position);
         RequestOptions myOptions = new RequestOptions()
                 .override(100, 100);
         Glide.with(context).asBitmap()
@@ -50,6 +53,18 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupViewHol
                 .load(group.gProfile).
                 diskCacheStrategy(DiskCacheStrategy.ALL).into(holder.binding.profileImage);
         holder.binding.chaterName.setText(group.gName);
+
+        holder.binding.mainBody.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, groupChatActivity.class);
+                intent.putExtra("groupName", holder.binding.chaterName.getText().toString());
+                intent.putExtra("profileImage", group.gProfile);
+                intent.putExtra("groupCreator", group.getGroupCreator().toString());
+                context.startActivity(intent);
+            }
+        });
+
     }
 
     @Override

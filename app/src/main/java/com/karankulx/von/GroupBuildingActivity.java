@@ -172,7 +172,7 @@ public class GroupBuildingActivity extends AppCompatActivity {
                                                     Glide.with(GroupBuildingActivity.this).load(filePath).diskCacheStrategy(DiskCacheStrategy.ALL)
                                                             .into(binding.profileImage);
 
-                                                    Groups group = new Groups(groupName, groupSummary, filePath, groupCheck, gUsers );
+                                                    Groups group = new Groups(groupName, groupSummary, filePath, uid, groupCheck, gUsers );
                                                     database.getReference().child("groups").child(uid).child(groupName + "-" + rand).setValue(group);
                                                     Toast.makeText(GroupBuildingActivity.this, "group created", Toast.LENGTH_SHORT).show();
                                                     Intent mainIntent = new Intent(GroupBuildingActivity.this, HomeActivity.class);

@@ -21,7 +21,9 @@
             android:exported="false" />
         <activity
             android:name=".groupChatActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
+            />
         <activity
             android:name=".FullScreenImage"
             android:exported="false" />

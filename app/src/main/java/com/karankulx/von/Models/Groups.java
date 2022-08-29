@@ -35,14 +35,6 @@ public class Groups {
         this.groupCreator = groupCreator;
     }
 
-    public boolean isGroupType() {
-        return isPrivate;
-    }
-
-    public void setGroupType(boolean groupType) {
-        this.isPrivate = groupType;
-    }
-
     public String getgName() {
         return gName;
     }

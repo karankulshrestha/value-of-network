@@ -34,7 +34,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.webkit.MimeTypeMap;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
 import androidx.activity.result.ActivityResult;
@@ -69,7 +68,7 @@ import com.google.firebase.storage.UploadTask;
 import com.jaiselrahman.filepicker.activity.FilePickerActivity;
 import com.jaiselrahman.filepicker.config.Configurations;
 import com.jaiselrahman.filepicker.model.MediaFile;
-import com.karankulx.von.Adapter.MessagesAdapter;
+import com.karankulx.von.Adapter.GroupMessageAdapter;
 import com.karankulx.von.Models.Message;
 import com.karankulx.von.databinding.ActivityChatBinding;
 
@@ -94,7 +93,7 @@ public class groupChatActivity extends AppCompatActivity{
     View mLayout;
 
     ActivityChatBinding binding;
-    MessagesAdapter adapter;
+    GroupMessageAdapter adapter;
     ArrayList<Message> messages;
 
     String senderRoom, receiverRoom;
@@ -111,7 +110,7 @@ public class groupChatActivity extends AppCompatActivity{
         setContentView(binding.getRoot());
 
         messages = new ArrayList<>();
-        adapter = new MessagesAdapter(this, messages);
+        adapter = new GroupMessageAdapter(this, messages);
         binding.chatRecyclerview.setLayoutManager(new LinearLayoutManager(this));
         binding.chatRecyclerview.setAdapter(adapter);
 
@@ -422,7 +421,7 @@ public class groupChatActivity extends AppCompatActivity{
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.chat_menu, menu);
+        inflater.inflate(R.menu.group_chat_menu, menu);
         return true;
     }
 

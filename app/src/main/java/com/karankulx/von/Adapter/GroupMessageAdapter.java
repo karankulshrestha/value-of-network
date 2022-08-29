@@ -19,12 +19,12 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.karankulx.von.FullScreenImage;
 import com.karankulx.von.Models.Message;
 import com.karankulx.von.R;
-import com.karankulx.von.databinding.ItemReceiveBinding;
-import com.karankulx.von.databinding.ItemSendBinding;
+import com.karankulx.von.databinding.GroupItemReceiveBinding;
+import com.karankulx.von.databinding.GroupItemSendBinding;
 
 import java.util.ArrayList;
 
-public class MessagesAdapter extends RecyclerView.Adapter {
+public class GroupMessageAdapter extends RecyclerView.Adapter {
 
     Context context;
     ArrayList<Message> messages;
@@ -32,7 +32,7 @@ public class MessagesAdapter extends RecyclerView.Adapter {
     final int ITEM_RECEIVE = 2;
 
 
-    public MessagesAdapter(Context context, ArrayList<Message> messages) {
+    public GroupMessageAdapter(Context context, ArrayList<Message> messages) {
         this.context = context;
         this.messages = messages;
     }
@@ -41,10 +41,10 @@ public class MessagesAdapter extends RecyclerView.Adapter {
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         if (viewType == ITEM_SENT) {
-            View view = LayoutInflater.from(context).inflate(R.layout.item_send, parent, false);
+            View view = LayoutInflater.from(context).inflate(R.layout.group_item_send, parent, false);
             return new SentViewHolder(view);
         } else {
-            View view = LayoutInflater.from(context).inflate(R.layout.item_receive, parent, false);
+            View view = LayoutInflater.from(context).inflate(R.layout.group_item_receive, parent, false);
             return new ReceiverViewHolder(view);
         }
     }
@@ -66,8 +66,8 @@ public class MessagesAdapter extends RecyclerView.Adapter {
             SentViewHolder viewHolder = (SentViewHolder) holder;
 
             if (message.getMessage().equals("©°¶•ë™æ")) {
-                viewHolder.binding.idExoPlayerVIew.setVisibility(View.VISIBLE);
                 viewHolder.binding.message.setVisibility(View.GONE);
+                viewHolder.binding.idExoPlayerVIew.setVisibility(View.VISIBLE);
                 ExoPlayer player = new ExoPlayer.Builder(context).build();
                 StyledPlayerView styledPlayerView = viewHolder.binding.idExoPlayerVIew;
                 MediaItem mediaItem = MediaItem.fromUri(message.getVideoUrl());
@@ -160,19 +160,19 @@ public class MessagesAdapter extends RecyclerView.Adapter {
 
     public class SentViewHolder extends RecyclerView.ViewHolder {
 
-        ItemSendBinding binding;
+        GroupItemSendBinding binding;
         public SentViewHolder(@NonNull View itemView) {
             super(itemView);
-            binding = ItemSendBinding.bind(itemView);
+            binding = GroupItemSendBinding.bind(itemView);
         }
     }
 
     public class ReceiverViewHolder extends RecyclerView.ViewHolder {
 
-        ItemReceiveBinding binding;
+        GroupItemReceiveBinding binding;
         public ReceiverViewHolder(@NonNull View itemView) {
             super(itemView);
-            binding = ItemReceiveBinding.bind(itemView);
+            binding = GroupItemReceiveBinding.bind(itemView);
         }
     }
 

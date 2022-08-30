@@ -15,15 +15,13 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Binder;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.provider.Settings;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -70,6 +68,8 @@ import com.jaiselrahman.filepicker.config.Configurations;
 import com.jaiselrahman.filepicker.model.MediaFile;
 import com.karankulx.von.Adapter.GroupMessageAdapter;
 import com.karankulx.von.Models.Message;
+import com.karankulx.von.Models.Users;
+import com.karankulx.von.Models.groupMessage;
 import com.karankulx.von.databinding.ActivityChatBinding;
 
 
@@ -94,14 +94,16 @@ public class groupChatActivity extends AppCompatActivity{
 
     ActivityChatBinding binding;
     GroupMessageAdapter adapter;
-    ArrayList<Message> messages;
+    ArrayList<groupMessage> messages;
 
     String senderRoom, receiverRoom;
     String senderUid, receiverUid;
+    public String groupId;
+
+    public ArrayList<Users> usersList;
 
     FirebaseDatabase database;
     FirebaseStorage storage;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,62 +122,71 @@ public class groupChatActivity extends AppCompatActivity{
         receiverUid = getIntent().getStringExtra("uid");
         senderUid = FirebaseAuth.getInstance().getUid();
 
-        senderRoom = senderUid + receiverUid;
-        receiverRoom = receiverUid + senderUid;
+//        senderRoom = senderUid + receiverUid;
+//        receiverRoom = receiverUid + senderUid;
         database = FirebaseDatabase.getInstance();
         storage = FirebaseStorage.getInstance();
 
-        database.getReference().child("chats")
-                .child(senderRoom)
-                .child("messages")
-                .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        messages.clear();
-                        for (DataSnapshot snapshot1 : snapshot.getChildren()) {
-                            Message message = snapshot1.getValue(Message.class);
-                            messages.add(message);
-                        }
-                        adapter.notifyDataSetChanged();
+        Intent intent = getIntent();
+        Bundle args = intent.getBundleExtra("BUNDLE");
+        usersList = (ArrayList<Users>) args.getSerializable("userDetails");
 
-                        binding.chatRecyclerview.smoothScrollToPosition(binding.chatRecyclerview.getAdapter().getItemCount());
+        groupId = intent.getStringExtra("groupId");
 
-                    }
+        Log.d("rajbhai", String.valueOf(usersList.get(0).getUid()));
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
 
-                    }
-                });
+//        database.getReference().child("groupChats")
+//                .child(senderRoom)
+//                .child("messages")
+//                .addValueEventListener(new ValueEventListener() {
+//                    @Override
+//                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                        messages.clear();
+//                        for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+//                            groupMessage message = snapshot1.getValue(groupMessage.class);
+//                            messages.add(message);
+//                        }
+//                        adapter.notifyDataSetChanged();
+//
+//                        binding.chatRecyclerview.smoothScrollToPosition(binding.chatRecyclerview.getAdapter().getItemCount());
+//
+//                    }
+//
+//                    @Override
+//                    public void onCancelled(@NonNull DatabaseError error) {
+//
+//                    }
+//                });
 
-        final Handler handler = new Handler();
-
-        binding.messageText.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                database.getReference().child("presence").child(senderUid).setValue("typing..");
-                handler.removeCallbacksAndMessages(null);
-                handler.postDelayed(userStopTyping, 1000);
-            }
-
-            Runnable userStopTyping = new Runnable() {
-                @Override
-                public void run() {
-                    database.getReference().child("presence").child(senderUid).setValue("Online");
-                }
-            };
-
-        });
+//        final Handler handler = new Handler();
+//
+//        binding.messageText.addTextChangedListener(new TextWatcher() {
+//            @Override
+//            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+//
+//            }
+//
+//            @Override
+//            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+//
+//            }
+//
+//            @Override
+//            public void afterTextChanged(Editable editable) {
+//                database.getReference().child("presence").child(senderUid).setValue("typing..");
+//                handler.removeCallbacksAndMessages(null);
+//                handler.postDelayed(userStopTyping, 1000);
+//            }
+//
+//            Runnable userStopTyping = new Runnable() {
+//                @Override
+//                public void run() {
+//                    database.getReference().child("presence").child(senderUid).setValue("Online");
+//                }
+//            };
+//
+//        });
 
         binding.sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -183,30 +194,42 @@ public class groupChatActivity extends AppCompatActivity{
                 String messageBox = binding.messageText.getText().toString();
                 binding.messageText.setText("");
                 Date date = new Date();
-                Message message = new Message(messageBox, senderUid, date.getTime());
-                database.getReference().child("chats")
-                        .child(senderRoom)
-                        .child("messages")
-                        .push()
-                        .setValue(message)
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void unused) {
-                                database.getReference().child("chats")
-                                        .child(receiverRoom)
-                                        .child("messages")
-                                        .push()
-                                        .setValue(message).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void unused) {
-
-                                            }
-                                        });
-                            }
-                        });
-
+                for (int i = 0; i < usersList.size(); i++) {
+                    groupMessage Message = new groupMessage(usersList.get(i).getName(), usersList.get(i).getPhoneNumber(), senderUid, messageBox, date.getTime());
+                    database.getReference().child("groupChats")
+                            .child(groupId).child(usersList.get(i).getUid()).push().setValue(Message);
+                };
             }
         });
+
+//        binding.sendButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                String messageBox = binding.messageText.getText().toString();
+//                binding.messageText.setText("");
+//                Date date = new Date();
+//                Message message = new Message(messageBox, senderUid, date.getTime());
+//                database.getReference().child("groupChats")
+//                        .child(senderRoom)
+//                        .child("messages")
+//                        .push()
+//                        .setValue(message).addOnSuccessListener(new OnSuccessListener<Void>() {
+//                            @Override
+//                            public void onSuccess(Void unused) {
+//                                database.getReference().child("groupChats")
+//                                        .child(receiverRoom)
+//                                        .child("messages")
+//                                        .push()
+//                                        .setValue(message).addOnSuccessListener(new OnSuccessListener<Void>() {
+//                                            @Override
+//                                            public void onSuccess(Void unused) {
+//
+//                                            }
+//                                        });
+//                            };
+//                        });
+//                };
+//        });
 
 
 
@@ -353,7 +376,7 @@ public class groupChatActivity extends AppCompatActivity{
                                 bmp.compress(Bitmap.CompressFormat.JPEG, 25, baos);
                                 byte[] data = baos.toByteArray();
                                 Log.d("malika", data.toString());
-                                StorageReference reference = storage.getReference().child("chats").child("photos").child(calender.getTimeInMillis() + "");
+                                StorageReference reference = storage.getReference().child("groupChats").child("photos").child(calender.getTimeInMillis() + "");
                                 reference.putBytes(data).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                                     @Override
                                     public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
@@ -368,7 +391,7 @@ public class groupChatActivity extends AppCompatActivity{
                                                     Message message = new Message(messageBox, senderUid, date.getTime());
                                                     message.setImageUrl(filePath);
                                                     message.setMessage("§£€®¾");
-                                                    database.getReference().child("chats")
+                                                    database.getReference().child("groupChats")
                                                             .child(senderRoom)
                                                             .child("messages")
                                                             .push()
@@ -376,7 +399,7 @@ public class groupChatActivity extends AppCompatActivity{
                                                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                                 @Override
                                                                 public void onSuccess(Void unused) {
-                                                                    database.getReference().child("chats")
+                                                                    database.getReference().child("groupChats")
                                                                             .child(receiverRoom)
                                                                             .child("messages")
                                                                             .push()
@@ -485,7 +508,7 @@ public class groupChatActivity extends AppCompatActivity{
                                                     message.setMessage("©°¶•ë™æ");
                                                     message.setVideoUrl(videoPath);
                                                     Log.d("happu", videoPath);
-                                                    database.getReference().child("chats")
+                                                    database.getReference().child("groupChats")
                                                             .child(senderRoom)
                                                             .child("messages")
                                                             .push()
@@ -493,7 +516,7 @@ public class groupChatActivity extends AppCompatActivity{
                                                             .addOnSuccessListener(new OnSuccessListener<Void>() {
                                                                 @Override
                                                                 public void onSuccess(Void unused) {
-                                                                    database.getReference().child("chats")
+                                                                    database.getReference().child("groupChats")
                                                                             .child(receiverRoom)
                                                                             .child("messages")
                                                                             .push()

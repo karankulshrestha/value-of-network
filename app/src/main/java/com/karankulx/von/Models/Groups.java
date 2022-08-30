@@ -3,14 +3,15 @@ package com.karankulx.von.Models;
 import java.util.ArrayList;
 
 public class Groups {
-    public String gName, gSummary, gProfile, groupCreator;
+    public String groupId, gName, gSummary, gProfile, groupCreator;
     public boolean isPrivate;
     public ArrayList<Users> user;
 
     public Groups() {
     }
 
-    public Groups(String gName, String gSummary, String gProfile, String groupCreator, boolean isPrivate) {
+    public Groups(String groupId, String gName, String gSummary, String gProfile, String groupCreator, boolean isPrivate) {
+        this.groupId = groupId;
         this.gName = gName;
         this.gSummary = gSummary;
         this.gProfile = gProfile;
@@ -18,13 +19,30 @@ public class Groups {
         this.groupCreator = groupCreator;
     }
 
-    public Groups(String gName, String gSummary, String gProfile, String groupCreator, boolean isPrivate, ArrayList<Users> user) {
+    public Groups(String groupId, String gName, String gSummary, String gProfile, String groupCreator, boolean isPrivate, ArrayList<Users> user) {
+        this.groupId = groupId;
         this.gName = gName;
         this.gSummary = gSummary;
         this.gProfile = gProfile;
         this.user = user;
         this.isPrivate = isPrivate;
         this.groupCreator = groupCreator;
+    }
+
+    public String getGroupId() {
+        return groupId;
+    }
+
+    public void setGroupId(String groupId) {
+        this.groupId = groupId;
+    }
+
+    public boolean isPrivate() {
+        return isPrivate;
+    }
+
+    public void setPrivate(boolean aPrivate) {
+        isPrivate = aPrivate;
     }
 
     public String getGroupCreator() {

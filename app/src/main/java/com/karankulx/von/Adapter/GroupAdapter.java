@@ -2,6 +2,7 @@ package com.karankulx.von.Adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,7 @@ import com.karankulx.von.databinding.GroupConversationBinding;
 import com.karankulx.von.databinding.RowConversationBinding;
 import com.karankulx.von.groupChatActivity;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupViewHolder>{
@@ -28,6 +30,7 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupViewHol
     Context context;
     public Groups group;
     ArrayList<Groups> groups;
+    ArrayList<Users> users;
 
     public GroupAdapter(Context context, ArrayList<Groups> groups) {
         this.context = context;
@@ -46,6 +49,7 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupViewHol
     @Override
     public void onBindViewHolder(@NonNull GroupViewHolder holder, int position) {
         group = groups.get(position);
+        users = new ArrayList<Users>();
         RequestOptions myOptions = new RequestOptions()
                 .override(100, 100);
         Glide.with(context).asBitmap()
@@ -59,7 +63,12 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupViewHol
             public void onClick(View view) {
                 Intent intent = new Intent(context, groupChatActivity.class);
                 intent.putExtra("groupName", holder.binding.chaterName.getText().toString());
+                users.addAll(group.getUser());
+                Bundle args = new Bundle();
+                args.putSerializable("userDetails",(Serializable) users);
+                intent.putExtra("BUNDLE",args);
                 intent.putExtra("profileImage", group.gProfile);
+                intent.putExtra("groupId", group.groupId);
                 intent.putExtra("groupCreator", group.getGroupCreator().toString());
                 context.startActivity(intent);
             }

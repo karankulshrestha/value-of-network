@@ -127,7 +127,7 @@ public class GroupBuildingActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 progressDialog.show();
-                rand = getRandomString(10);
+                rand = getRandomString(28);
                 groupName = binding.gpName.getText().toString();
                 groupSummary = binding.gSum.getText().toString();
                 if (groupName.length() != 0) {
@@ -172,8 +172,8 @@ public class GroupBuildingActivity extends AppCompatActivity {
                                                     Glide.with(GroupBuildingActivity.this).load(filePath).diskCacheStrategy(DiskCacheStrategy.ALL)
                                                             .into(binding.profileImage);
 
-                                                    Groups group = new Groups(groupName, groupSummary, filePath, uid, groupCheck, gUsers );
-                                                    database.getReference().child("groups").child(uid).child(groupName + "-" + rand).setValue(group);
+                                                    Groups group = new Groups(rand, groupName, groupSummary, filePath, uid, groupCheck, gUsers );
+                                                    database.getReference().child("groups").child(uid).child(rand).setValue(group);
                                                     Toast.makeText(GroupBuildingActivity.this, "group created", Toast.LENGTH_SHORT).show();
                                                     Intent mainIntent = new Intent(GroupBuildingActivity.this, HomeActivity.class);
                                                     mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

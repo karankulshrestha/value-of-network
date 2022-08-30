@@ -18,6 +18,7 @@ import com.google.android.exoplayer2.ui.StyledPlayerView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.karankulx.von.FullScreenImage;
 import com.karankulx.von.Models.Message;
+import com.karankulx.von.Models.groupMessage;
 import com.karankulx.von.R;
 import com.karankulx.von.databinding.GroupItemReceiveBinding;
 import com.karankulx.von.databinding.GroupItemSendBinding;
@@ -27,12 +28,12 @@ import java.util.ArrayList;
 public class GroupMessageAdapter extends RecyclerView.Adapter {
 
     Context context;
-    ArrayList<Message> messages;
+    ArrayList<groupMessage> messages;
     final int ITEM_SENT = 1;
     final int ITEM_RECEIVE = 2;
 
 
-    public GroupMessageAdapter(Context context, ArrayList<Message> messages) {
+    public GroupMessageAdapter(Context context, ArrayList<groupMessage> messages) {
         this.context = context;
         this.messages = messages;
     }
@@ -51,7 +52,7 @@ public class GroupMessageAdapter extends RecyclerView.Adapter {
 
     @Override
     public int getItemViewType(int position) {
-        Message message = messages.get(position);
+        groupMessage message = messages.get(position);
         if (FirebaseAuth.getInstance().getUid().equals(message.getSenderId())) {
             return ITEM_SENT;
         } else {
@@ -61,7 +62,7 @@ public class GroupMessageAdapter extends RecyclerView.Adapter {
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-        Message message = messages.get(position);
+        groupMessage message = messages.get(position);
         if (holder.getClass() == SentViewHolder.class) {
             SentViewHolder viewHolder = (SentViewHolder) holder;
 

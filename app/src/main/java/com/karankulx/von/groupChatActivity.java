@@ -25,6 +25,7 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -57,6 +58,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
@@ -96,7 +98,6 @@ public class groupChatActivity extends AppCompatActivity{
     GroupMessageAdapter adapter;
     ArrayList<groupMessage> messages;
 
-    String senderRoom, receiverRoom;
     String senderUid, receiverUid;
     public String groupId;
 
@@ -122,8 +123,6 @@ public class groupChatActivity extends AppCompatActivity{
         receiverUid = getIntent().getStringExtra("uid");
         senderUid = FirebaseAuth.getInstance().getUid();
 
-//        senderRoom = senderUid + receiverUid;
-//        receiverRoom = receiverUid + senderUid;
         database = FirebaseDatabase.getInstance();
         storage = FirebaseStorage.getInstance();
 
@@ -158,34 +157,7 @@ public class groupChatActivity extends AppCompatActivity{
                     }
                 });
 
-//        final Handler handler = new Handler();
-//
-//        binding.messageText.addTextChangedListener(new TextWatcher() {
-//            @Override
-//            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//
-//            }
-//
-//            @Override
-//            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//
-//            }
-//
-//            @Override
-//            public void afterTextChanged(Editable editable) {
-//                database.getReference().child("presence").child(senderUid).setValue("typing..");
-//                handler.removeCallbacksAndMessages(null);
-//                handler.postDelayed(userStopTyping, 1000);
-//            }
-//
-//            Runnable userStopTyping = new Runnable() {
-//                @Override
-//                public void run() {
-//                    database.getReference().child("presence").child(senderUid).setValue("Online");
-//                }
-//            };
-//
-//        });
+
 
         binding.sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -200,36 +172,6 @@ public class groupChatActivity extends AppCompatActivity{
                 };
             }
         });
-
-//        binding.sendButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                String messageBox = binding.messageText.getText().toString();
-//                binding.messageText.setText("");
-//                Date date = new Date();
-//                Message message = new Message(messageBox, senderUid, date.getTime());
-//                database.getReference().child("groupChats")
-//                        .child(senderRoom)
-//                        .child("messages")
-//                        .push()
-//                        .setValue(message).addOnSuccessListener(new OnSuccessListener<Void>() {
-//                            @Override
-//                            public void onSuccess(Void unused) {
-//                                database.getReference().child("groupChats")
-//                                        .child(receiverRoom)
-//                                        .child("messages")
-//                                        .push()
-//                                        .setValue(message).addOnSuccessListener(new OnSuccessListener<Void>() {
-//                                            @Override
-//                                            public void onSuccess(Void unused) {
-//
-//                                            }
-//                                        });
-//                            };
-//                        });
-//                };
-//        });
-
 
 
         View v = findViewById(R.id.popupIcons);
@@ -302,6 +244,29 @@ public class groupChatActivity extends AppCompatActivity{
             }
         });
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.group_chat_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        senderUid = FirebaseAuth.getInstance().getUid();
+        groupId = getIntent().getStringExtra("groupId");
+        switch (item.getItemId()) {
+            case R.id.clear_chat:
+                database = FirebaseDatabase.getInstance();
+                DatabaseReference databaseReference = database.getReference().child("groupChats").child(groupId).child(senderUid);
+                databaseReference.removeValue();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
 
     private void imagePicker() {
         Intent intent = new Intent(groupChatActivity.this, FilePickerActivity.class);
@@ -424,13 +389,6 @@ public class groupChatActivity extends AppCompatActivity{
                 }
             });
 
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.group_chat_menu, menu);
-        return true;
-    }
 
     @Override
     public boolean onSupportNavigateUp() {

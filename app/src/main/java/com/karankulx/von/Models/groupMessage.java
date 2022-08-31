@@ -7,6 +7,12 @@ public class groupMessage {
     public groupMessage() {
     }
 
+    public groupMessage(String senderId, String message, long timestamp) {
+        this.senderId = senderId;
+        this.message = message;
+        this.timestamp = timestamp;
+    }
+
     public groupMessage(String name, String phoneNumber, String senderId, String message, long timestamp) {
         this.name = name;
         this.phoneNumber = phoneNumber;

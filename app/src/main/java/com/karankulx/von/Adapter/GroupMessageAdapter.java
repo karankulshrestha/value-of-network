@@ -16,8 +16,14 @@ import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.ui.StyledPlayerView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.karankulx.von.FullScreenImage;
 import com.karankulx.von.Models.Message;
+import com.karankulx.von.Models.Users;
 import com.karankulx.von.Models.groupMessage;
 import com.karankulx.von.R;
 import com.karankulx.von.databinding.GroupItemReceiveBinding;
@@ -31,7 +37,8 @@ public class GroupMessageAdapter extends RecyclerView.Adapter {
     ArrayList<groupMessage> messages;
     final int ITEM_SENT = 1;
     final int ITEM_RECEIVE = 2;
-
+    FirebaseDatabase database;
+    DatabaseReference databaseReference;
 
     public GroupMessageAdapter(Context context, ArrayList<groupMessage> messages) {
         this.context = context;
@@ -63,9 +70,24 @@ public class GroupMessageAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
         groupMessage message = messages.get(position);
+        database = FirebaseDatabase.getInstance();
+        databaseReference = database.getReference().child("users")
+                .child(message.getSenderId());
+
         if (holder.getClass() == SentViewHolder.class) {
             SentViewHolder viewHolder = (SentViewHolder) holder;
+            databaseReference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    Users users = snapshot.getValue(Users.class);
+                    ((SentViewHolder) holder).binding.getInfo.setText(users.getName() + " ~ " + users.getPhoneNumber());
+                }
 
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
             if (message.getMessage().equals("©°¶•ë™æ")) {
                 viewHolder.binding.message.setVisibility(View.GONE);
                 viewHolder.binding.idExoPlayerVIew.setVisibility(View.VISIBLE);
@@ -111,9 +133,21 @@ public class GroupMessageAdapter extends RecyclerView.Adapter {
 
         } else {
             ReceiverViewHolder viewHolder = (ReceiverViewHolder) holder;
+            databaseReference.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    Users users = snapshot.getValue(Users.class);
+                    ((ReceiverViewHolder) holder).binding.getInfo.setText(users.getName() + " ~ " + users.getPhoneNumber());
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
             if (message.getMessage().equals("©°¶•ë™æ")) {
-                viewHolder.binding.idExoPlayerVIew.setVisibility(View.VISIBLE);
                 viewHolder.binding.message.setVisibility(View.GONE);
+                viewHolder.binding.idExoPlayerVIew.setVisibility(View.VISIBLE);
                 ExoPlayer player = new ExoPlayer.Builder(context).build();
                 StyledPlayerView styledPlayerView = viewHolder.binding.idExoPlayerVIew;
                 MediaItem mediaItem = MediaItem.fromUri(message.getVideoUrl());

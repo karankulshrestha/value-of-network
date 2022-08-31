@@ -133,31 +133,30 @@ public class groupChatActivity extends AppCompatActivity{
 
         groupId = intent.getStringExtra("groupId");
 
-        Log.d("rajbhai", String.valueOf(usersList.get(0).getUid()));
 
+        database.getReference().child("groupChats")
+                .child(groupId)
+                .child(senderUid)
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        messages.clear();
+                        for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+                            groupMessage message = snapshot1.getValue(groupMessage.class);
+                            messages.add(message);
+                            Log.d("rajbhai", message.getSenderId());
+                        }
+                        adapter.notifyDataSetChanged();
 
-//        database.getReference().child("groupChats")
-//                .child(senderRoom)
-//                .child("messages")
-//                .addValueEventListener(new ValueEventListener() {
-//                    @Override
-//                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                        messages.clear();
-//                        for (DataSnapshot snapshot1 : snapshot.getChildren()) {
-//                            groupMessage message = snapshot1.getValue(groupMessage.class);
-//                            messages.add(message);
-//                        }
-//                        adapter.notifyDataSetChanged();
-//
-//                        binding.chatRecyclerview.smoothScrollToPosition(binding.chatRecyclerview.getAdapter().getItemCount());
-//
-//                    }
-//
-//                    @Override
-//                    public void onCancelled(@NonNull DatabaseError error) {
-//
-//                    }
-//                });
+                        binding.chatRecyclerview.smoothScrollToPosition(binding.chatRecyclerview.getAdapter().getItemCount());
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
 
 //        final Handler handler = new Handler();
 //
@@ -194,8 +193,8 @@ public class groupChatActivity extends AppCompatActivity{
                 String messageBox = binding.messageText.getText().toString();
                 binding.messageText.setText("");
                 Date date = new Date();
+                groupMessage Message = new groupMessage(senderUid, messageBox, date.getTime());
                 for (int i = 0; i < usersList.size(); i++) {
-                    groupMessage Message = new groupMessage(usersList.get(i).getName(), usersList.get(i).getPhoneNumber(), senderUid, messageBox, date.getTime());
                     database.getReference().child("groupChats")
                             .child(groupId).child(usersList.get(i).getUid()).push().setValue(Message);
                 };
@@ -388,29 +387,14 @@ public class groupChatActivity extends AppCompatActivity{
                                                     String messageBox = binding.messageText.getText().toString();
                                                     binding.messageText.setText("");
                                                     Date date = new Date();
-                                                    Message message = new Message(messageBox, senderUid, date.getTime());
+                                                    groupMessage message = new groupMessage(messageBox, senderUid, date.getTime());
                                                     message.setImageUrl(filePath);
                                                     message.setMessage("§£€®¾");
-                                                    database.getReference().child("groupChats")
-                                                            .child(senderRoom)
-                                                            .child("messages")
-                                                            .push()
-                                                            .setValue(message)
-                                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                                @Override
-                                                                public void onSuccess(Void unused) {
-                                                                    database.getReference().child("groupChats")
-                                                                            .child(receiverRoom)
-                                                                            .child("messages")
-                                                                            .push()
-                                                                            .setValue(message).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                                                @Override
-                                                                                public void onSuccess(Void unused) {
-
-                                                                                }
-                                                                            });
-                                                                }
-                                                            });
+                                                    message.setSenderId(senderUid);
+                                                    for (int i = 0; i < usersList.size(); i++) {
+                                                        database.getReference().child("groupChats")
+                                                                .child(groupId).child(usersList.get(i).getUid()).push().setValue(message);
+                                                    };
                                                     progressDialog.dismiss();
                                                 }
                                             });
@@ -485,7 +469,7 @@ public class groupChatActivity extends AppCompatActivity{
             @Override
             public void apply(final long executionId, final int returnCode) {
                 if (returnCode == RETURN_CODE_SUCCESS) {
-                    StorageReference reference = storage.getReference().child("chats").child("videos").child(calendar.getTimeInMillis() + "");
+                    StorageReference reference = storage.getReference().child("groupChats").child("videos").child(calendar.getTimeInMillis() + "");
                     StorageMetadata metadata = new StorageMetadata.Builder()
                             .setContentType("video/" + getExt(uri))
                             .build();
@@ -507,26 +491,12 @@ public class groupChatActivity extends AppCompatActivity{
                                                     Message message = new Message(messageBox, senderUid, date.getTime());
                                                     message.setMessage("©°¶•ë™æ");
                                                     message.setVideoUrl(videoPath);
+                                                    message.setSenderId(senderUid);
                                                     Log.d("happu", videoPath);
-                                                    database.getReference().child("groupChats")
-                                                            .child(senderRoom)
-                                                            .child("messages")
-                                                            .push()
-                                                            .setValue(message)
-                                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                                @Override
-                                                                public void onSuccess(Void unused) {
-                                                                    database.getReference().child("groupChats")
-                                                                            .child(receiverRoom)
-                                                                            .child("messages")
-                                                                            .push()
-                                                                            .setValue(message).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                                                @Override
-                                                                                public void onSuccess(Void unused) {
-                                                                                }
-                                                                            });
-                                                                }
-                                                            });
+                                                    for (int i = 0; i < usersList.size(); i++) {
+                                                        database.getReference().child("groupChats")
+                                                                .child(groupId).child(usersList.get(i).getUid()).push().setValue(message);
+                                                    };
                                                     progressDialog.dismiss();
                                                 }
                                             });

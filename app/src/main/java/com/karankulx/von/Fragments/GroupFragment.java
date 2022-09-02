@@ -33,7 +33,6 @@ public class GroupFragment extends Fragment {
     FirebaseDatabase database;
     FirebaseAuth firebaseAuth;
     ArrayList<Groups> groups = new ArrayList<>();
-    public int status = 0;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -56,12 +55,8 @@ public class GroupFragment extends Fragment {
                         ArrayList<Users> users = group.getUser();
                         for (Users users1 : users) {
                             if (uid.equals(users1.getUid())) {
-                                status = 1;
-                            };
-                            if (status == 1) {
                                 groups.add(group);
-                            }
-                            status = 0;
+                            };
                         }
                     }
                 }

@@ -1,5 +1,6 @@
 package com.karankulx.von.Adapter;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -47,7 +48,7 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupViewHol
 
 
     @Override
-    public void onBindViewHolder(@NonNull GroupViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull GroupViewHolder holder, @SuppressLint("RecyclerView") int position) {
         group = groups.get(position);
         users = new ArrayList<Users>();
         RequestOptions myOptions = new RequestOptions()
@@ -61,15 +62,16 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupViewHol
         holder.binding.mainBody.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Groups group1 = groups.get(position);
                 Intent intent = new Intent(context, groupChatActivity.class);
                 intent.putExtra("groupName", holder.binding.chaterName.getText().toString());
-                users.addAll(group.getUser());
+                users.addAll(group1.getUser());
                 Bundle args = new Bundle();
                 args.putSerializable("userDetails",(Serializable) users);
                 intent.putExtra("BUNDLE",args);
-                intent.putExtra("profileImage", group.gProfile);
-                intent.putExtra("groupId", group.groupId);
-                intent.putExtra("groupCreator", group.getGroupCreator().toString());
+                intent.putExtra("profileImage", group1.getgProfile());
+                intent.putExtra("groupId", group1.getGroupId());
+                intent.putExtra("groupCreator", group1.getGroupCreator());
                 context.startActivity(intent);
             }
         });

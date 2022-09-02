@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -73,6 +74,8 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupViewHol
                 intent.putExtra("groupId", group1.getGroupId());
                 intent.putExtra("groupCreator", group1.getGroupCreator());
                 context.startActivity(intent);
+                users.clear();
+                Log.d("rajo", String.valueOf(users.size()));
             }
         });
 

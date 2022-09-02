@@ -166,10 +166,10 @@ public class groupChatActivity extends AppCompatActivity{
                 Date date = new Date();
                 groupMessage Message = new groupMessage(senderUid, messageBox, date.getTime());
                 for (int i = 0; i < usersList.size(); i++) {
-                    Log.d("rajjho", String.valueOf(usersList.size()));
                     database.getReference().child("groupChats")
                             .child(groupId).child(usersList.get(i).getUid()).push().setValue(Message);
                 };
+
             }
         });
 

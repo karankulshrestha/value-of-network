@@ -74,6 +74,7 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupViewHol
                 intent.putExtra("groupDetails", group1.getgSummary());
                 intent.putExtra("groupId", group1.getGroupId());
                 intent.putExtra("groupCreator", group1.getGroupCreator());
+                intent.putExtra("isPrivate", group1.isPrivate());
                 context.startActivity(intent);
                 users.clear();
                 Log.d("rajo", String.valueOf(users.size()));

@@ -138,12 +138,45 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/admin_post_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="40dp"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="0pt"
+        android:background="#1A0F2E"
+        android:orientation="horizontal"
+        android:padding="5dp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        tools:ignore="MissingConstraints">
+
+    <TextView
+        android:id="@+id/adminChat"
+        android:layout_width="match_parent"
+        android:layout_height="35dp"
+        android:gravity="center"
+        android:textAlignment="center"
+        android:text="only admin send the message"
+        android:textColor="@color/white"
+        android:textSize="20dp"
+        android:textStyle="normal"
+        tools:ignore="MissingConstraints"></TextView>
+
+    </LinearLayout>
+
+    <LinearLayout
         android:id="@+id/add_post_layout"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
+        android:visibility="visible"
         android:layout_centerHorizontal="true"
         android:layout_margin="0pt"
         android:background="#ffffff"

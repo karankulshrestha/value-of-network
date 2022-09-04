@@ -102,12 +102,13 @@ public class groupChatActivity extends AppCompatActivity{
 
     String senderUid, receiverUid;
     public String groupId, name, profileUri, groupCreator, groupSummary;
+    public boolean isPrivate;
 
     public ArrayList<Users> usersList;
 
     FirebaseDatabase database;
     FirebaseStorage storage;
-    Context context;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,6 +134,7 @@ public class groupChatActivity extends AppCompatActivity{
         profileUri = getIntent().getStringExtra("profileImage");
         groupCreator = getIntent().getStringExtra("groupCreator");
         groupSummary = getIntent().getStringExtra("groupDetails");
+        isPrivate = getIntent().getBooleanExtra("isPrivate", false);
 
         Intent intent = getIntent();
         Bundle args = intent.getBundleExtra("BUNDLE");
@@ -147,12 +149,22 @@ public class groupChatActivity extends AppCompatActivity{
                 intent1.putExtra("groupName", name);
                 intent1.putExtra("profileImage", profileUri);
                 intent1.putExtra("groupDetails", groupSummary);
+                intent1.putExtra("groupCreator", groupCreator);
+                intent1.putExtra("groupCreator", groupCreator);
+                intent1.putExtra("Private", isPrivate);
                 Bundle args = new Bundle();
                 args.putSerializable("groupMembers",(Serializable) usersList);
                 intent1.putExtra("BUNDLE",args);
                 startActivity(intent1);
             }
         });
+
+        if (isPrivate) {
+            if (!groupCreator.equals(senderUid)) {
+                binding.addPostLayout.setVisibility(View.GONE);
+                binding.adminPostLayout.setVisibility(View.VISIBLE);
+            };
+        };
 
         database.getReference().child("groupChats")
                 .child(groupId)

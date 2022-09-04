@@ -12,11 +12,13 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Adapter;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -31,13 +33,15 @@ import java.util.ArrayList;
 public class GroupDetails extends AppCompatActivity {
 
     ActivityGroupDetailsBinding binding;
-    ArrayList<Users> usersList;
-    String groupName, profile, groupSummary, uid;
+    ArrayList<Users> usersList, usersListTemp;
+    String groupName, profile, groupSummary, uid, groupCreator;
+    public boolean isPrivate;
     groupUserAdapter adapter;
     private RecyclerView recyclerView;
     public Context context;
     FirebaseDatabase firebaseDatabase;
     DatabaseReference databaseReference;
+    FirebaseAuth firebaseAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,14 +49,20 @@ public class GroupDetails extends AppCompatActivity {
         binding = ActivityGroupDetailsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        usersListTemp = new ArrayList<Users>();
+
         groupName = getIntent().getStringExtra("groupName");
         profile = getIntent().getStringExtra("profileImage");
         groupSummary = getIntent().getStringExtra("groupDetails");
+        groupCreator = getIntent().getStringExtra("groupCreator");
+        firebaseAuth = FirebaseAuth.getInstance();
+        uid = firebaseAuth.getCurrentUser().getUid();
         Intent intent = getIntent();
         Bundle args = intent.getBundleExtra("BUNDLE");
         usersList = (ArrayList<Users>) args.getSerializable("groupMembers");
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference();
+        isPrivate = getIntent().getBooleanExtra("Private", false);
 
         for (Users users : usersList) {
             databaseReference.child("users").child(users.getUid())
@@ -62,6 +72,7 @@ public class GroupDetails extends AppCompatActivity {
                             Users users1 = snapshot.getValue(Users.class);
                             users.setName(users1.getName());
                             users.setProfilePic(users1.getProfilePic());
+                            usersListTemp.addAll(users;
                         }
 
                         @Override
@@ -70,10 +81,25 @@ public class GroupDetails extends AppCompatActivity {
                         }
                     });
         };
+        for (Users users1 : usersList) {
+            if (groupCreator.equals(users1.getUid())) {
+                binding.adminName.setText(users1.getName() + " ~ " + users1.getPhoneNumber());
+                binding.creator.setVisibility(View.VISIBLE);
+                Glide.with(this).load(users1.getProfilePic())
+                        .diskCacheStrategy(DiskCacheStrategy.ALL).into(binding.adminImage);
+                int temp = usersList.indexOf(users1);
+                usersList.remove(temp);
+                if (isPrivate) {
+                    binding.admin.setVisibility(View.VISIBLE);
+                };
+            };
+        };
+
+
 
         context = getApplicationContext();
 
-        String tMembers = ((String) ("Total no. of members: " + usersList.size()));
+        String tMembers = ((String) ("Total no. of members: " + (usersList.size() + 1)));
 
         Glide.with(this).load(profile).diskCacheStrategy(DiskCacheStrategy.ALL)
                 .centerCrop()
@@ -81,7 +107,22 @@ public class GroupDetails extends AppCompatActivity {
         binding.groupDetails.setText(groupSummary);
         binding.numberUsers.setText(tMembers);
         recyclerView = findViewById(R.id.groupMembers);
-        buildRecyclerView();
+
+        // initializing our adapter class.
+        adapter = new groupUserAdapter(GroupDetails.this, usersList);
+
+        // adding layout manager to our recycler view.
+        LinearLayoutManager manager = new LinearLayoutManager(this);
+        recyclerView.setHasFixedSize(true);
+
+        // setting layout manager
+        // to our recycler view.
+        recyclerView.setLayoutManager(manager);
+
+        // setting adapter to
+        // our recycler view.
+        recyclerView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
 
     };
 
@@ -139,24 +180,6 @@ public class GroupDetails extends AppCompatActivity {
             // list to our adapter class.
             adapter.filterList(filteredlist);
         }
-    }
-
-    private void buildRecyclerView() {
-
-        // initializing our adapter class.
-        adapter = new groupUserAdapter(GroupDetails.this, usersList);
-
-        // adding layout manager to our recycler view.
-        LinearLayoutManager manager = new LinearLayoutManager(this);
-        recyclerView.setHasFixedSize(true);
-
-        // setting layout manager
-        // to our recycler view.
-        recyclerView.setLayoutManager(manager);
-
-        // setting adapter to
-        // our recycler view.
-        recyclerView.setAdapter(adapter);
     }
 
 }

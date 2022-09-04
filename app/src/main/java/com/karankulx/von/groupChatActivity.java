@@ -69,6 +69,7 @@ import com.jaiselrahman.filepicker.activity.FilePickerActivity;
 import com.jaiselrahman.filepicker.config.Configurations;
 import com.jaiselrahman.filepicker.model.MediaFile;
 import com.karankulx.von.Adapter.GroupMessageAdapter;
+import com.karankulx.von.Models.Groups;
 import com.karankulx.von.Models.Message;
 import com.karankulx.von.Models.Users;
 import com.karankulx.von.Models.groupMessage;
@@ -79,6 +80,7 @@ import com.karankulx.von.databinding.ActivityChatBinding;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -99,12 +101,13 @@ public class groupChatActivity extends AppCompatActivity{
     ArrayList<groupMessage> messages;
 
     String senderUid, receiverUid;
-    public String groupId;
+    public String groupId, name, profileUri, groupCreator, groupSummary;
 
     public ArrayList<Users> usersList;
 
     FirebaseDatabase database;
     FirebaseStorage storage;
+    Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,11 +129,30 @@ public class groupChatActivity extends AppCompatActivity{
         database = FirebaseDatabase.getInstance();
         storage = FirebaseStorage.getInstance();
 
+        name = getIntent().getStringExtra("groupName");
+        profileUri = getIntent().getStringExtra("profileImage");
+        groupCreator = getIntent().getStringExtra("groupCreator");
+        groupSummary = getIntent().getStringExtra("groupDetails");
+
         Intent intent = getIntent();
         Bundle args = intent.getBundleExtra("BUNDLE");
         usersList = (ArrayList<Users>) args.getSerializable("userDetails");
 
         groupId = intent.getStringExtra("groupId");
+
+        binding.groupDetails.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent1 = new Intent(groupChatActivity.this, GroupDetails.class);
+                intent1.putExtra("groupName", name);
+                intent1.putExtra("profileImage", profileUri);
+                intent1.putExtra("groupDetails", groupSummary);
+                Bundle args = new Bundle();
+                args.putSerializable("groupMembers",(Serializable) usersList);
+                intent1.putExtra("BUNDLE",args);
+                startActivity(intent1);
+            }
+        });
 
         database.getReference().child("groupChats")
                 .child(groupId)
@@ -186,9 +208,6 @@ public class groupChatActivity extends AppCompatActivity{
         window.setStatusBarColor(this.getResources().getColor(R.color.purple_500));
 
 
-        String name = getIntent().getStringExtra("groupName");
-        String profileUri = getIntent().getStringExtra("profileImage");
-        String groupCreator = getIntent().getStringExtra("groupCreator");
         toolbar = findViewById(R.id.toolbar);
         title = findViewById(R.id.username);
         profile = findViewById(R.id.profile_image);
@@ -215,6 +234,9 @@ public class groupChatActivity extends AppCompatActivity{
 
             }
         });
+
+
+
 
         aVideos.setOnClickListener(new View.OnClickListener() {
             @Override

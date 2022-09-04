@@ -18,7 +18,9 @@
         android:theme="@style/Theme.Von">
         <activity
             android:name=".GroupDetails"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="adjustPan"
+            />
         <activity
             android:name=".GroupBuildingActivity"
             android:exported="false" />

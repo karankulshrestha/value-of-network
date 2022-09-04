@@ -71,6 +71,7 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupViewHol
                 args.putSerializable("userDetails",(Serializable) users);
                 intent.putExtra("BUNDLE",args);
                 intent.putExtra("profileImage", group1.getgProfile());
+                intent.putExtra("groupDetails", group1.getgSummary());
                 intent.putExtra("groupId", group1.getGroupId());
                 intent.putExtra("groupCreator", group1.getGroupCreator());
                 context.startActivity(intent);

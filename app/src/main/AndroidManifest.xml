@@ -17,13 +17,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Von">
         <activity
+            android:name=".GroupDetails"
+            android:exported="false" />
+        <activity
             android:name=".GroupBuildingActivity"
             android:exported="false" />
         <activity
             android:name=".groupChatActivity"
             android:exported="false"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
-            />
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".FullScreenImage"
             android:exported="false" />

@@ -18,12 +18,9 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
 import android.provider.Settings;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -34,7 +31,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.webkit.MimeTypeMap;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
 import androidx.activity.result.ActivityResult;
@@ -46,6 +42,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 
@@ -70,9 +69,9 @@ import com.jaiselrahman.filepicker.activity.FilePickerActivity;
 import com.jaiselrahman.filepicker.config.Configurations;
 import com.jaiselrahman.filepicker.model.MediaFile;
 import com.karankulx.von.Adapter.MessagesAdapter;
+import com.karankulx.von.Fragments.ChatsFragment;
 import com.karankulx.von.Models.Message;
 import com.karankulx.von.databinding.ActivityChatBinding;
-
 
 
 import java.io.ByteArrayOutputStream;
@@ -81,6 +80,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Objects;
 
 
@@ -104,6 +104,7 @@ public class ChatActivity extends AppCompatActivity{
     FirebaseStorage storage;
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -115,6 +116,7 @@ public class ChatActivity extends AppCompatActivity{
         binding.chatRecyclerview.setLayoutManager(new LinearLayoutManager(this));
         binding.chatRecyclerview.setAdapter(adapter);
 
+
         attach = findViewById(R.id.attachment);
         aImages = findViewById(R.id.photos);
         aVideos = findViewById(R.id.videos);
@@ -125,6 +127,7 @@ public class ChatActivity extends AppCompatActivity{
         receiverRoom = receiverUid + senderUid;
         database = FirebaseDatabase.getInstance();
         storage = FirebaseStorage.getInstance();
+
 
         database.getReference().child("chats")
                 .child(senderRoom)
@@ -149,57 +152,6 @@ public class ChatActivity extends AppCompatActivity{
                     }
                 });
 
-//        final Handler handler = new Handler();
-
-//        binding.messageText.addTextChangedListener(new TextWatcher() {
-//            @Override
-//            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//
-//            }
-//
-//            @Override
-//            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-//
-//            }
-//
-//            @Override
-//            public void afterTextChanged(Editable editable) {
-//                database.getReference().child("presence").child(senderUid).setValue("typing..");
-//                handler.removeCallbacksAndMessages(null);
-//                handler.postDelayed(userStopTyping, 1000);
-//            }
-//
-//            Runnable userStopTyping = new Runnable() {
-//                @Override
-//                public void run() {
-//                    database.getReference().child("presence").child(senderUid).setValue("Online");
-//                }
-//            };
-//
-//        });
-//
-//        database.getReference().child("presence").child(receiverUid).addValueEventListener(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                if (snapshot.exists()) {
-//                    String status = snapshot.getValue(String.class);
-//                    if (!status.isEmpty()) {
-//                        if (status.equals("Offline")) {
-//                            binding.indicator.setVisibility(View.GONE);
-//                        } else {
-//                            binding.indicator.setText(status);
-//                            binding.indicator.setVisibility(View.VISIBLE);
-//                        }
-//                    }
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(@NonNull DatabaseError error) {
-//
-//            }
-//        });
-
 
         binding.sendButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -208,6 +160,16 @@ public class ChatActivity extends AppCompatActivity{
                 binding.messageText.setText("");
                 Date date = new Date();
                 Message message = new Message(messageBox, senderUid, date.getTime());
+
+                HashMap<String, Object> lastMsgObj = new HashMap<>();
+                lastMsgObj.put("lastMsg", message.getMessage());
+                lastMsgObj.put("lastMsgTime", date.getTime());
+
+                database.getReference().child("chats").child(senderRoom)
+                        .updateChildren(lastMsgObj);
+                database.getReference().child("chats").child(receiverRoom)
+                        .updateChildren(lastMsgObj);
+
                 database.getReference().child("chats")
                         .child(senderRoom)
                         .child("messages")
@@ -226,9 +188,9 @@ public class ChatActivity extends AppCompatActivity{
 
                                             }
                                         });
+
                             }
                         });
-
             }
         });
 
@@ -301,7 +263,16 @@ public class ChatActivity extends AppCompatActivity{
 
             }
         });
+
     }
+
+
+    @Override
+    public void onBackPressed() {
+       super.onBackPressed();
+    }
+
+
 
     private void imagePicker() {
         Intent intent = new Intent(ChatActivity.this, FilePickerActivity.class);
@@ -671,13 +642,6 @@ public class ChatActivity extends AppCompatActivity{
         return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
     }
 
-    @Override
-    protected void onPause() {
-        String currentId = FirebaseAuth.getInstance().getUid();
-        database = FirebaseDatabase.getInstance();
-        database.getReference().child("presence").child(currentId).setValue("Offline");
-        super.onPause();
-    }
 
 }
 

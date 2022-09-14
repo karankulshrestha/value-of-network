@@ -16,7 +16,11 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.karankulx.von.Models.Groups;
 import com.karankulx.von.Models.Users;
 import com.karankulx.von.R;
@@ -33,6 +37,8 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupViewHol
     public Groups group;
     ArrayList<Groups> groups;
     ArrayList<Users> users;
+    FirebaseDatabase database;
+    DatabaseReference databaseReference;
 
     public GroupAdapter(Context context, ArrayList<Groups> groups) {
         this.context = context;
@@ -52,6 +58,7 @@ public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.GroupViewHol
     public void onBindViewHolder(@NonNull GroupViewHolder holder, @SuppressLint("RecyclerView") int position) {
         group = groups.get(position);
         users = new ArrayList<Users>();
+        database = FirebaseDatabase.getInstance();
         RequestOptions myOptions = new RequestOptions()
                 .override(100, 100);
         Glide.with(context).asBitmap()

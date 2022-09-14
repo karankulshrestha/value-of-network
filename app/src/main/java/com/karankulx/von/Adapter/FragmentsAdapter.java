@@ -1,14 +1,18 @@
 package com.karankulx.von.Adapter;
 
+import android.content.Context;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.fragment.app.FragmentTransaction;
 
 import com.karankulx.von.Fragments.ChatsFragment;
 import com.karankulx.von.Fragments.GroupFragment;
 import com.karankulx.von.Fragments.SheetsFragment;
+import com.karankulx.von.R;
 
 public class FragmentsAdapter extends FragmentPagerAdapter {
     public FragmentsAdapter(@NonNull FragmentManager fm) {
@@ -47,4 +51,5 @@ public class FragmentsAdapter extends FragmentPagerAdapter {
         }
         return title;
     }
+
 }

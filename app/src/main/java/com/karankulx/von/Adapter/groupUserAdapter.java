@@ -10,6 +10,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.karankulx.von.GroupDetails;
 import com.karankulx.von.Models.Users;
 import com.karankulx.von.R;
@@ -23,6 +28,7 @@ public class groupUserAdapter extends RecyclerView.Adapter<groupUserAdapter.grou
 
     private ArrayList<Users> groupUsers;
     Context context;
+    FirebaseDatabase database;
 
     public groupUserAdapter(Context context, ArrayList<Users> groupUsers) {
         this.groupUsers = groupUsers;

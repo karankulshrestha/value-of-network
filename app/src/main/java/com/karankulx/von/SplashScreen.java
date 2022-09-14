@@ -44,7 +44,7 @@ public class SplashScreen extends AppCompatActivity {
                     startActivity(i);
                     finish();
                 }
-            }, 5000);
+            }, 1000);
 
         } else {
             new Handler().postDelayed(new Runnable() {
@@ -54,7 +54,7 @@ public class SplashScreen extends AppCompatActivity {
                     startActivity(intent);
                     finish();
                 }
-            }, 5000);
+            }, 1000);
         }
 
     }

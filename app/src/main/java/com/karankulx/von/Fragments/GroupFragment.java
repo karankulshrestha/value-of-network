@@ -33,6 +33,7 @@ public class GroupFragment extends Fragment {
     FirebaseDatabase database;
     FirebaseAuth firebaseAuth;
     ArrayList<Groups> groups = new ArrayList<>();
+    ArrayList<Users> users = new ArrayList<>();
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -52,8 +53,22 @@ public class GroupFragment extends Fragment {
                 for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
                     for (DataSnapshot dataSnapshot1 : dataSnapshot.getChildren()) {
                         Groups group = dataSnapshot1.getValue(Groups.class);
-                        ArrayList<Users> users = group.getUser();
+                        users = group.getUser();
                         for (Users users1 : users) {
+                            database.getReference().child("users").child(users1.getUid())
+                                    .addValueEventListener(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                            Users users2 = snapshot.getValue(Users.class);
+                                            users1.setName(users2.getName());
+                                            users1.setProfilePic(users2.getProfilePic());
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
+
+                                        }
+                                    });
                             if (uid.equals(users1.getUid())) {
                                 groups.add(group);
                             };

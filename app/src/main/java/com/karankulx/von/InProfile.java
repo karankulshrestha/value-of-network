@@ -127,6 +127,7 @@ public class InProfile extends AppCompatActivity {
                                         userRef.child(uid).child("profilePic").setValue(uri.toString());
                                         userRef.child(uid).child("name").setValue(name.getText().toString());
                                         userRef.child(uid).child("status").setValue(status.getText().toString());
+
                                         Toast.makeText(InProfile.this, "profile updated.", Toast.LENGTH_SHORT).show();
                                         progressDialog.dismiss();
                                     }

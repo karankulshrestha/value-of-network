@@ -33,7 +33,7 @@ import java.util.ArrayList;
 public class GroupDetails extends AppCompatActivity {
 
     ActivityGroupDetailsBinding binding;
-    ArrayList<Users> usersList, usersListTemp;
+    public ArrayList<Users> usersList;
     String groupName, profile, groupSummary, uid, groupCreator;
     public boolean isPrivate;
     groupUserAdapter adapter;
@@ -49,8 +49,6 @@ public class GroupDetails extends AppCompatActivity {
         binding = ActivityGroupDetailsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        usersListTemp = new ArrayList<Users>();
-
         groupName = getIntent().getStringExtra("groupName");
         profile = getIntent().getStringExtra("profileImage");
         groupSummary = getIntent().getStringExtra("groupDetails");
@@ -64,31 +62,30 @@ public class GroupDetails extends AppCompatActivity {
         databaseReference = firebaseDatabase.getReference();
         isPrivate = getIntent().getBooleanExtra("Private", false);
 
-        for (Users users : usersList) {
-            databaseReference.child("users").child(users.getUid())
-                    .addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            Users users1 = snapshot.getValue(Users.class);
-                            users.setName(users1.getName());
-                            users.setProfilePic(users1.getProfilePic());
-                            usersListTemp.addAll(users;
-                        }
+//        for (Users users : usersList) {
+//            databaseReference.child("users").child(users.getUid())
+//                    .addValueEventListener(new ValueEventListener() {
+//                        @Override
+//                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                            Users users1 = snapshot.getValue(Users.class);
+//                            users.setName(users1.getName());
+//                            users.setProfilePic(users1.getProfilePic());
+//                        }
+//
+//                        @Override
+//                        public void onCancelled(@NonNull DatabaseError error) {
+//
+//                        }
+//                    });
+//        };
 
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
 
-                        }
-                    });
-        };
         for (Users users1 : usersList) {
             if (groupCreator.equals(users1.getUid())) {
                 binding.adminName.setText(users1.getName() + " ~ " + users1.getPhoneNumber());
                 binding.creator.setVisibility(View.VISIBLE);
-                Glide.with(this).load(users1.getProfilePic())
+                Glide.with(GroupDetails.this).load(users1.getProfilePic())
                         .diskCacheStrategy(DiskCacheStrategy.ALL).into(binding.adminImage);
-                int temp = usersList.indexOf(users1);
-                usersList.remove(temp);
                 if (isPrivate) {
                     binding.admin.setVisibility(View.VISIBLE);
                 };
@@ -99,7 +96,7 @@ public class GroupDetails extends AppCompatActivity {
 
         context = getApplicationContext();
 
-        String tMembers = ((String) ("Total no. of members: " + (usersList.size() + 1)));
+        String tMembers = ((String) ("Total members: " + (usersList.size())));
 
         Glide.with(this).load(profile).diskCacheStrategy(DiskCacheStrategy.ALL)
                 .centerCrop()
@@ -181,5 +178,4 @@ public class GroupDetails extends AppCompatActivity {
             adapter.filterList(filteredlist);
         }
     }
-
 }

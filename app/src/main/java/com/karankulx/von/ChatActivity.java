@@ -170,6 +170,8 @@ public class ChatActivity extends AppCompatActivity{
                 database.getReference().child("chats").child(receiverRoom)
                         .updateChildren(lastMsgObj);
 
+                database.getReference().child("recentChats").child(senderUid).child(receiverUid);
+
                 database.getReference().child("chats")
                         .child(senderRoom)
                         .child("messages")
@@ -185,7 +187,7 @@ public class ChatActivity extends AppCompatActivity{
                                         .setValue(message).addOnSuccessListener(new OnSuccessListener<Void>() {
                                             @Override
                                             public void onSuccess(Void unused) {
-
+                                                database.getReference().child("recentChats").child(receiverUid).child(senderUid);
                                             }
                                         });
 

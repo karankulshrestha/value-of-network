@@ -2,6 +2,8 @@ package com.karankulx.von.Adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +24,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.karankulx.von.ChatActivity;
+import com.karankulx.von.Fragments.ChatsFragment;
 import com.karankulx.von.Models.Users;
 import com.karankulx.von.R;
 import com.karankulx.von.databinding.RowConversationBinding;
@@ -33,11 +36,9 @@ import java.util.Date;
 public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UsersViewHolder>{
 
     Context context;
-    ArrayList<Users> users;
-    FirebaseDatabase database;
-    FirebaseAuth auth;
+    ArrayList<String> users;
 
-    public UsersAdapter(Context context, ArrayList<Users> users) {
+    public UsersAdapter(Context context, ArrayList<String> users) {
         this.context = context;
         this.users = users;
     }
@@ -53,9 +54,9 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UsersViewHol
 
     @Override
     public void onBindViewHolder(@NonNull UsersViewHolder holder, int position) {
-        Users user = users.get(position);
+        String user = users.get(position);
         String senderId = FirebaseAuth.getInstance().getCurrentUser().getUid();
-        String senderRoom = senderId + user.getUid();
+        String senderRoom = senderId + user;
 
         FirebaseDatabase.getInstance().getReference().child("chats").child(senderRoom)
                         .addValueEventListener(new ValueEventListener() {
@@ -67,6 +68,7 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UsersViewHol
                                     SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm a");
                                     holder.binding.lastMessage.setText(lastMsg);
                                     holder.binding.lastMsgTime.setText(dateFormat.format(new Date(time)));
+
                                 } else {
                                     holder.binding.lastMessage.setText("Tap to chat");
                                 };
@@ -78,18 +80,31 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UsersViewHol
                             }
                         });
 
-        holder.binding.chaterName.setText(user.getName());
-        Glide.with(context).load(user.getProfilePic()).diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(holder.binding.profileImage);
-
-        holder.binding.mainBody.setOnClickListener(new View.OnClickListener() {
+        FirebaseDatabase.getInstance().getReference().child("users").child(user).addValueEventListener(new ValueEventListener() {
             @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(context, ChatActivity.class);
-                intent.putExtra("username", holder.binding.chaterName.getText().toString());
-                intent.putExtra("profileUri", user.getProfilePic());
-                intent.putExtra("uid", user.getUid());
-                context.startActivity(intent);
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                Users users = snapshot.getValue(Users.class);
+                holder.binding.chaterName.setText(users.getName() + " ~ " + users.getPhoneNumber());
+                Glide.with(context).load(users.getProfilePic())
+                        .diskCacheStrategy(DiskCacheStrategy.ALL).into(holder.binding.profileImage);
+
+                holder.binding.mainBody.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        holder.binding.lastMessage.setTypeface(null, Typeface.NORMAL);
+                        Intent intent = new Intent(context, ChatActivity.class);
+                        intent.putExtra("username", holder.binding.chaterName.getText().toString());
+                        intent.putExtra("profileUri", users.getProfilePic());
+                        intent.putExtra("uid", users.getUid());
+                        context.startActivity(intent);
+                    }
+                });
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
             }
         });
 

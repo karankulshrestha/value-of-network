@@ -1,6 +1,7 @@
 package com.karankulx.von.Adapter;
 
 import android.content.Context;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -14,10 +15,14 @@ import com.karankulx.von.Fragments.GroupFragment;
 import com.karankulx.von.Fragments.SheetsFragment;
 import com.karankulx.von.R;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class FragmentsAdapter extends FragmentPagerAdapter {
     public FragmentsAdapter(@NonNull FragmentManager fm) {
         super(fm);
     }
+
 
     @NonNull
     @Override

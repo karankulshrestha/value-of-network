@@ -16,36 +16,16 @@
 
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
-            android:layout_height="170dp"
+            android:layout_height="100dp"
             android:layout_marginTop="-20dp"
             app:cardBackgroundColor="#242850"
-            app:cardCornerRadius="20dp"
+            app:cardCornerRadius="0dp"
             app:cardElevation="15dp" >
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical">
-
-                <EditText
-                    android:id="@+id/textView7"
-                    android:elevation="16dp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginTop="50dp"
-                    android:layout_marginRight="20dp"
-                    android:height="45dp"
-                    android:background="@drawable/textbox_outline"
-                    android:backgroundTint="#FBFBFB"
-                    android:drawableLeft="@drawable/ic_baseline_search_24"
-                    android:drawablePadding="10dp"
-                    android:hint="Search"
-                    android:padding="10dp"
-                    android:textAlignment="viewStart"
-                    android:textSize="18dp" />
-
-            </LinearLayout>
+                android:orientation="vertical"/>
         </androidx.cardview.widget.CardView>
         
         <com.google.android.material.tabs.TabLayout

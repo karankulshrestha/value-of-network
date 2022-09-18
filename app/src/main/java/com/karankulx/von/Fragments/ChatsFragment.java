@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
@@ -26,10 +27,12 @@ import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.karankulx.von.Adapter.UsersAdapter;
 import com.karankulx.von.ContactSync;
@@ -53,6 +56,33 @@ import java.util.Set;
 import java.util.TreeMap;
 
 
+//class DateItem {
+//
+//    // Member variable of this class
+//    String date;
+//
+//    // Constructor of this class
+//    DateItem(String date)
+//    {
+//
+//        // This keyword refers to current object itself
+//        this.date = date;
+//    }
+//}
+//
+//class sortItems implements Comparator<DateItem> {
+//
+//    // Method of this class
+//    // @Override
+//    public int compare(DateItem a, DateItem b)
+//    {
+//
+//        // Returning the value after comparing the objects
+//        // this will sort the data in Ascending order
+//        return a.date.compareTo(b.date);
+//    }
+//}
+
 public class ChatsFragment extends Fragment  {
 
     public ChatsFragment() {
@@ -64,7 +94,7 @@ public class ChatsFragment extends Fragment  {
     public UsersAdapter adapter;
     FirebaseDatabase firebaseDatabase;
     FirebaseAuth firebaseAuth;
-    Map<Date, String> mainUsers = new HashMap<>();
+    Map<Date, String> mainUsers = new TreeMap<>();
     ArrayList<String> users = new ArrayList<>();
 
     @Override
@@ -79,26 +109,27 @@ public class ChatsFragment extends Fragment  {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 users.clear();
-
+                mainUsers.clear();
                 for (DataSnapshot snapshot1 : snapshot.getChildren()) {
                     if (firebaseAuth.getUid().equals(snapshot1.getKey().substring(0, 28))) {
-                        Long time = (Long) snapshot1.child("lastMsgTime").getValue();
-                        Timestamp stamp = new Timestamp(time);
-                        Date date = new Date(stamp.getTime());
+                        Long tStamp = snapshot1.child("lastMsgTime").getValue(Long.class);
+                        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
+                        Date date = new Date(tStamp);
                         mainUsers.put(date, snapshot1.getKey().substring(28, 56));
-                        Log.d("yomen", String.valueOf(snapshot1.child("lastMsgTime").getValue()));
                     };
+
                 };
 
 
-                for (Map.Entry<Date, String> entry : mainUsers.entrySet()) {
-                    Log.d("lole", String.valueOf(entry.getKey()));
-                    users.add(entry.getValue());
+                for (Map.Entry m : mainUsers.entrySet()) {
+                    users.add((String) m.getValue());
+                    Log.d("janam", String.valueOf(m.getKey()));
                 };
 
-
+                Collections.reverse(users);
 
                 Log.d("yomen", String.valueOf(mainUsers.size()));
+
                 adapter = new UsersAdapter(getContext(), users);
                 LinearLayoutManager manager = new LinearLayoutManager(context);
                 binding.chatRecyclerview.setHasFixedSize(true);

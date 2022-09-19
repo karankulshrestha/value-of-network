@@ -3,13 +3,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:backgroundTint="@color/purple_500"
+    android:background="@color/purple_500"
     tools:context=".Fragments.SheetsFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/sheetRecyclerview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Sheets Space"
-        ></TextView>
+        android:layout_height="match_parent" />
+
 
 </FrameLayout>

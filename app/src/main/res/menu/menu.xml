@@ -5,6 +5,11 @@
         android:id="@+id/Profile"
         android:title="Profile" />
     <item
+        android:id="@+id/setStatus"
+        android:title="Status" />
+
+    <item
         android:id="@+id/signOut"
         android:title="Sign Out" />
+
 </menu>

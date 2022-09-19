@@ -66,6 +66,7 @@
         <entry key="..\:/Users/karan/Desktop/von/app/src/main/res/layout/activity_phone_verification.xml" value="0.21331521739130435" />
         <entry key="..\:/Users/karan/Desktop/von/app/src/main/res/layout/activity_sign_in.xml" value="0.21331521739130435" />
         <entry key="..\:/Users/karan/Desktop/von/app/src/main/res/layout/activity_sing_up.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/karan/Desktop/von/app/src/main/res/layout/activity_status.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/karan/Desktop/von/app/src/main/res/layout/camfragment.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/karan/Desktop/von/app/src/main/res/layout/fragment_chats.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/karan/Desktop/von/app/src/main/res/layout/fragment_group.xml" value="0.21331521739130435" />
@@ -75,11 +76,15 @@
         <entry key="..\:/Users/karan/Desktop/von/app/src/main/res/layout/group_item_send.xml" value="0.253125" />
         <entry key="..\:/Users/karan/Desktop/von/app/src/main/res/layout/group_row_members.xml" value="0.21331521739130435" />
         <entry key="..\:/Users/karan/Desktop/von/app/src/main/res/layout/item_receive.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/karan/Desktop/von/app/src/main/res/layout/item_row.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/karan/Desktop/von/app/src/main/res/layout/item_send.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/karan/Desktop/von/app/src/main/res/layout/item_status.xml" value="0.253125" />
         <entry key="..\:/Users/karan/Desktop/von/app/src/main/res/layout/row_conversation.xml" value="0.25416666666666665" />
+        <entry key="..\:/Users/karan/Desktop/von/app/src/main/res/layout/status_row.xml" value="0.253125" />
         <entry key="..\:/Users/karan/Desktop/von/app/src/main/res/menu/chat_menu.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/karan/Desktop/von/app/src/main/res/menu/context_menu.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/karan/Desktop/von/app/src/main/res/menu/group_chat_menu.xml" value="0.253125" />
+        <entry key="..\:/Users/karan/Desktop/von/app/src/main/res/menu/menu.xml" value="0.25416666666666665" />
       </map>
     </option>
   </component>

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="-20dp"
+    android:layout_marginTop="0dp"
     android:background="#1B1E3C"
     tools:context=".HomeActivity">
 
@@ -17,15 +17,16 @@
         <androidx.cardview.widget.CardView
             android:layout_width="match_parent"
             android:layout_height="100dp"
-            android:layout_marginTop="-20dp"
+            android:layout_marginTop="0dp"
             app:cardBackgroundColor="#242850"
             app:cardCornerRadius="0dp"
             app:cardElevation="15dp" >
 
-            <LinearLayout
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/statusList"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"/>
+                android:layout_height="match_parent" />
+
         </androidx.cardview.widget.CardView>
         
         <com.google.android.material.tabs.TabLayout

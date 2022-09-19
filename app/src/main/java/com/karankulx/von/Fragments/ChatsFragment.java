@@ -56,33 +56,6 @@ import java.util.Set;
 import java.util.TreeMap;
 
 
-//class DateItem {
-//
-//    // Member variable of this class
-//    String date;
-//
-//    // Constructor of this class
-//    DateItem(String date)
-//    {
-//
-//        // This keyword refers to current object itself
-//        this.date = date;
-//    }
-//}
-//
-//class sortItems implements Comparator<DateItem> {
-//
-//    // Method of this class
-//    // @Override
-//    public int compare(DateItem a, DateItem b)
-//    {
-//
-//        // Returning the value after comparing the objects
-//        // this will sort the data in Ascending order
-//        return a.date.compareTo(b.date);
-//    }
-//}
-
 public class ChatsFragment extends Fragment  {
 
     public ChatsFragment() {

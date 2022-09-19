@@ -644,7 +644,6 @@ public class ChatActivity extends AppCompatActivity{
         return mimeTypeMap.getExtensionFromMimeType(contentResolver.getType(uri));
     }
 
-
 }
 
 

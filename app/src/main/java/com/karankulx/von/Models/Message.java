@@ -3,6 +3,7 @@ package com.karankulx.von.Models;
 public class Message {
     private String messageId, message, senderId, imageUrl, videoUrl;
     private long timestamp;
+    private boolean seen;
     private int feeling;
 
     public Message() {
@@ -12,6 +13,21 @@ public class Message {
         this.message = message;
         this.senderId = senderId;
         this.timestamp = timestamp;
+    }
+
+    public Message(String message, String senderId, long timestamp, boolean seen) {
+        this.message = message;
+        this.senderId = senderId;
+        this.timestamp = timestamp;
+        this.seen = seen;
+    }
+
+    public boolean isSeen() {
+        return seen;
+    }
+
+    public void setSeen(boolean seen) {
+        this.seen = seen;
     }
 
     public String getMessageId() {

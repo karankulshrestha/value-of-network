@@ -124,29 +124,31 @@ public class HomeActivity extends AppCompatActivity {
                 if (snapshot.exists()) {
                     userStatuses.clear();
                     for (DataSnapshot snapshot1 : snapshot.getChildren()) {
-                        userStatus us = new userStatus();
-                        String uid = snapshot1.getKey();
-                        us.setName(snapshot1.child("name").getValue(String.class));
-                        us.setProfileImage(snapshot1.child("profileImage").getValue(String.class));
-                        us.setLastUpdated(snapshot1.child("lastUpdated").getValue(Long.class));
+                        if(snapshot1.exists()) {
+                            userStatus us = new userStatus();
+                            String uid = snapshot1.getKey();
+                            us.setName(snapshot1.child("name").getValue(String.class));
+                            us.setProfileImage(snapshot1.child("profileImage").getValue(String.class));
+                            us.setLastUpdated(snapshot1.child("lastUpdated").getValue(Long.class));
 
-                        ArrayList<Status> statuses = new ArrayList<>();
+                            ArrayList<Status> statuses = new ArrayList<>();
 
-                        if (snapshot1.child("statuses").exists()) {
-                            for (DataSnapshot statusSnapshot : snapshot1.child("statuses").getChildren()) {
-                                Status sampleStatus = statusSnapshot.getValue(Status.class);
-                                statuses.add(sampleStatus);
+                            if (snapshot1.child("statuses").exists()) {
+                                for (DataSnapshot statusSnapshot : snapshot1.child("statuses").getChildren()) {
+                                    Status sampleStatus = statusSnapshot.getValue(Status.class);
+                                    statuses.add(sampleStatus);
+                                };
+
+                                us.setStatuses(statuses);
+                                if (FirebaseAuth.getInstance().getUid().equals(uid)) {
+                                    userStatuses.add(0, us);
+                                } else  {
+                                    userStatuses.add(us);
+                                }
                             };
-
-                            us.setStatuses(statuses);
-                            if (FirebaseAuth.getInstance().getUid().equals(uid)) {
-                                userStatuses.add(0, us);
-                            } else  {
-                                userStatuses.add(us);
-                            }
-                        };
-                        if (statusAdapter != null) {
-                            statusAdapter.notifyDataSetChanged();
+                            if (statusAdapter != null) {
+                                statusAdapter.notifyDataSetChanged();
+                            };
                         };
                     };
 

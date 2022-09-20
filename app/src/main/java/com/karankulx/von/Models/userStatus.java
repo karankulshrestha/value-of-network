@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 public class userStatus {
     private String name, profileImage;
-    private long lastUpdated;
+    private Long lastUpdated;
     private ArrayList<Status> statuses;
 
     public userStatus() {

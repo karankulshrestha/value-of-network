@@ -33,6 +33,9 @@ public class statusActivity extends AppCompatActivity {
         database = FirebaseDatabase.getInstance();
         myStatus = new ArrayList<>();
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
         deleteStatusAdapter = new DeleteStatusAdapter(this, myStatus);
         binding.statusRecyclerview.setAdapter(deleteStatusAdapter);
 
@@ -64,4 +67,11 @@ public class statusActivity extends AppCompatActivity {
                 });
 
     }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
+
 }

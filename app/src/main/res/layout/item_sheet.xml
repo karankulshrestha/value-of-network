@@ -7,8 +7,9 @@
     android:orientation="horizontal"
     android:id="@+id/mainBody"
     android:layout_margin="10dp"
-    android:background="?selectableItemBackground"
     android:backgroundTint="#676666"
+    android:background="?selectableItemBackground"
+    android:clickable="true"
     android:foregroundTint="#6C6A6A">
 
     <de.hdodenhof.circleimageview.CircleImageView

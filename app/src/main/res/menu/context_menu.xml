@@ -12,7 +12,7 @@
 
     <item
         android:id="@+id/groupBtn"
-        android:icon="@drawable/ic_add"
+        android:icon="@drawable/ic_baseline_add_24"
         android:orderInCategory="100"
         android:title="Delete"
         app:showAsAction="always" />

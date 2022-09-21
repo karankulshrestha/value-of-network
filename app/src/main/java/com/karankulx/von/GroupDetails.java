@@ -49,6 +49,9 @@ public class GroupDetails extends AppCompatActivity {
         binding = ActivityGroupDetailsBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
         groupName = getIntent().getStringExtra("groupName");
         profile = getIntent().getStringExtra("profileImage");
         groupSummary = getIntent().getStringExtra("groupDetails");
@@ -61,23 +64,6 @@ public class GroupDetails extends AppCompatActivity {
         firebaseDatabase = FirebaseDatabase.getInstance();
         databaseReference = firebaseDatabase.getReference();
         isPrivate = getIntent().getBooleanExtra("Private", false);
-
-//        for (Users users : usersList) {
-//            databaseReference.child("users").child(users.getUid())
-//                    .addValueEventListener(new ValueEventListener() {
-//                        @Override
-//                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                            Users users1 = snapshot.getValue(Users.class);
-//                            users.setName(users1.getName());
-//                            users.setProfilePic(users1.getProfilePic());
-//                        }
-//
-//                        @Override
-//                        public void onCancelled(@NonNull DatabaseError error) {
-//
-//                        }
-//                    });
-//        };
 
 
         for (Users users1 : usersList) {
@@ -122,6 +108,12 @@ public class GroupDetails extends AppCompatActivity {
         adapter.notifyDataSetChanged();
 
     };
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        onBackPressed();
+        return true;
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

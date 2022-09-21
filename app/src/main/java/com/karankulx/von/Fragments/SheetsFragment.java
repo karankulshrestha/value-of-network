@@ -94,6 +94,7 @@ public class SheetsFragment extends Fragment {
                     }
                 }
 
+                requiredContacts.clear();
                 for (Contact lCon : lContacts) {
                     for (Users cCon : cloudContacts) {
                         if (lCon.getPhoneNumber().contains(cCon.getPhoneNumber())) {

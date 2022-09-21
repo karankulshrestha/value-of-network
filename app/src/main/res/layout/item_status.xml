@@ -28,8 +28,8 @@
             android:layout_height="75dp"
             android:layout_centerInParent="true"
             app:portion_color="@color/colorAccent"
-            app:portion_spacing="4dp"
-            app:portion_width="4dp"
+            app:portion_spacing="2dp"
+            app:portion_width="2dp"
             app:portions_count="8" />
 
 

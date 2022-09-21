@@ -23,10 +23,14 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -116,11 +120,49 @@ public class productsPage extends AppCompatActivity {
         builder.setNegativeButton("delete", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-
+                deleteItems();
             }
         });
         builder.show();
     }
+
+    private void deleteItems() {
+        database.getReference().child("sheets").child(userId).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+                        ProgressDialog progressDialog = new ProgressDialog(productsPage.this);
+                        progressDialog.setMessage("deleting...");
+                        progressDialog.setCanceledOnTouchOutside(false);
+                        progressDialog.setCancelable(false);
+                        progressDialog.show();
+                        Product p = snapshot1.getValue(Product.class);
+                        StorageReference photoRef = FirebaseStorage.getInstance().getReferenceFromUrl(p.getPhotourl());
+                        Log.d("lund", p.getPhotourl());
+                        photoRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
+                            @Override
+                            public void onSuccess(Void unused) {
+                                progressDialog.dismiss();
+                            }
+                        }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                progressDialog.dismiss();
+                                Toast.makeText(productsPage.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        });
+                    };
+                };
+                database.getReference().child("sheets").child(userId).removeValue();
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    };
 
 
     @Override

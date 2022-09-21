@@ -1,11 +1,14 @@
 package com.karankulx.von;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.ClipData;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -28,6 +31,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.karankulx.von.Models.Message;
+import com.karankulx.von.Models.Product;
 import com.karankulx.von.databinding.ActivityProductsPageBinding;
 
 import java.io.ByteArrayOutputStream;
@@ -47,6 +51,7 @@ public class productsPage extends AppCompatActivity {
     FirebaseDatabase database;
     FirebaseStorage firebaseStorage;
     public String userId;
+    ArrayList<Product> products;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +63,7 @@ public class productsPage extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         userId = getIntent().getStringExtra("userId");
+        products = new ArrayList<>();
 
         firebaseAuth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
@@ -86,20 +92,39 @@ public class productsPage extends AppCompatActivity {
                 intent.setAction(Intent.ACTION_GET_CONTENT);
                 startActivityForResult(Intent.createChooser(intent,"Select Picture"), PICK_IMAGE_MULTIPLE);
                 return true;
-            default:
-                return super.onOptionsItemSelected(item);
+
+            case R.id.actionDelete:
+                showDialog(this, "Delete Items", "This will delete all items");
+                break;
         }
+        return super.onOptionsItemSelected(item);
+    }
+
+
+    public void showDialog(Activity activity, String title, CharSequence message) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+
+        if (title != null) builder.setTitle(title);
+
+        builder.setMessage(message);
+        builder.setPositiveButton("cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                dialogInterface.cancel();
+            }
+        });
+        builder.setNegativeButton("delete", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+
+            }
+        });
+        builder.show();
     }
 
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        ProgressDialog progressDialog = new ProgressDialog(productsPage.this);
-        progressDialog.setMessage("wait sending...");
-        progressDialog.setCanceledOnTouchOutside(false);
-        progressDialog.setCancelable(false);
-        progressDialog.show();
-
         try {
             // When an Image is picked
             if (requestCode == PICK_IMAGE_MULTIPLE && resultCode == RESULT_OK
@@ -143,11 +168,14 @@ public class productsPage extends AppCompatActivity {
                         }
                         Log.v("LOG_TAG", "Selected Images" + mArrayUri.size());
 
-                        if (mArrayUri.size() > 5) {
-                            Toast.makeText(this, "max 5 photos allowed",
-                                    Toast.LENGTH_LONG).show();
-                        } else {
+                        if (mArrayUri.size() <= 5) {
+
                             for (Uri uri : mArrayUri) {
+                                ProgressDialog progressDialog = new ProgressDialog(productsPage.this);
+                                progressDialog.setMessage("wait sending...");
+                                progressDialog.setCanceledOnTouchOutside(false);
+                                progressDialog.setCancelable(false);
+                                progressDialog.show();
                                 Calendar calender = Calendar.getInstance();
                                 Bitmap bmp = null;
                                 try {
@@ -156,7 +184,7 @@ public class productsPage extends AppCompatActivity {
                                     bmp.compress(Bitmap.CompressFormat.JPEG, 25, baos);
                                     byte[] data1 = baos.toByteArray();
                                     Log.d("malika", data.toString());
-                                    StorageReference reference = firebaseStorage.getReference().child("sheets").child(firebaseAuth.getUid()).child(calender.getTimeInMillis() + "");
+                                    StorageReference reference = firebaseStorage.getReference().child("sheets").child(userId).child(calender.getTimeInMillis() + "");
                                     reference.putBytes(data1).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                                         @Override
                                         public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
@@ -165,31 +193,35 @@ public class productsPage extends AppCompatActivity {
                                                     @Override
                                                     public void onSuccess(Uri uri) {
                                                         String filePath = uri.toString();
-                                                        database.getReference().child("sheets").child(firebaseAuth.getUid()).push().setValue(filePath);
+                                                        Calendar calender = Calendar.getInstance();
+                                                        Product p = new Product(filePath, calender.getTimeInMillis());
+                                                        database.getReference().child("sheets").child(userId).push().setValue(p);
+                                                        progressDialog.dismiss();
                                                     }
                                                 });
                                             }
                                         }
                                     });
                                 } catch (IOException e) {
+                                    progressDialog.dismiss();
                                     e.printStackTrace();
                                 }
                             };
-                        };
 
-                        progressDialog.dismiss();
+                        } else {
+                            Toast.makeText(this, "max 5 photos allowed",
+                                    Toast.LENGTH_LONG).show();
+                        };
 
                     }
                 }
             } else {
                 Toast.makeText(this, "You haven't picked Image",
                         Toast.LENGTH_LONG).show();
-                progressDialog.dismiss();
             }
         } catch (Exception e) {
             Toast.makeText(this, "Something went wrong", Toast.LENGTH_LONG)
                     .show();
-            progressDialog.dismiss();
         }
 
         super.onActivityResult(requestCode, resultCode, data);

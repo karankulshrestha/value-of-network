@@ -6,6 +6,13 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+    <item
+        android:id="@+id/actionDelete"
+        android:icon="@drawable/ic_baseline_delete_24"
+        android:title="getPhoto"
+        app:showAsAction="ifRoom|collapseActionView"
+        />
+
     <!--item for our search view with its id-->
     <item
         android:id="@+id/actionAdd"
@@ -13,5 +20,6 @@
         android:title="getPhoto"
         app:showAsAction="ifRoom|collapseActionView"
         />
+
 
 </menu>

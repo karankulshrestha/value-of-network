@@ -20,6 +20,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -34,6 +35,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.karankulx.von.Adapter.GridAdapter;
 import com.karankulx.von.Models.Message;
 import com.karankulx.von.Models.Product;
 import com.karankulx.von.databinding.ActivityProductsPageBinding;
@@ -74,6 +76,36 @@ public class productsPage extends AppCompatActivity {
         firebaseStorage = FirebaseStorage.getInstance();
 
         Log.d("lolraj", userId);
+
+        database.getReference().child("sheets").child(userId).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    products.clear();
+                    for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+                        Product p = snapshot1.getValue(Product.class);
+                        products.add(p);
+                    };
+                };
+
+                GridAdapter gridAdapter = new GridAdapter(productsPage.this, products);
+                binding.gridview.setAdapter(gridAdapter);
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+        binding.gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                Intent intent = new Intent(productsPage.this, GridImageViewer.class);
+                intent.putExtra("productImage", products.get(i).getPhotourl());
+                startActivity(intent);
+            }
+        });
 
 
     }

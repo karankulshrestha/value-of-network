@@ -1,18 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:backgroundTint="@color/purple_500"
     android:background="@color/purple_500"
-    tools:context=".productsPage">
-    
-    <GridView
+    tools:context=".GridImageViewer">
+ma
+    <com.ortiz.touchview.TouchImageView
+        android:id="@+id/productImage"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/gridview"
-        android:numColumns="2"/>
-
+        android:src="@drawable/delete" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

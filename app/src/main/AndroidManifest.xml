@@ -19,9 +19,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Von">
         <activity
+            android:name=".GridImageViewer"
+            android:exported="false" />
+        <activity
             android:name=".productsPage"
-            android:exported="false"
-            />
+            android:exported="false" />
         <activity
             android:name=".statusActivity"
             android:exported="false" />

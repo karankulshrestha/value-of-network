@@ -24,11 +24,13 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.webkit.MimeTypeMap;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -418,6 +420,23 @@ public class ChatActivity extends AppCompatActivity{
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.chat_menu, menu);
         return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.chatSheet:
+                Intent intent = new Intent(ChatActivity.this, productsPage.class);
+                intent.putExtra("userId", receiverUid);
+                startActivity(intent);
+                break;
+
+            case R.id.clear_chat:
+                database.getReference().child("chats").child(senderRoom).removeValue();
+                break;
+
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

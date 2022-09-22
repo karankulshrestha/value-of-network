@@ -1,5 +1,9 @@
 package com.karankulx.von;
 
+import androidx.activity.result.ActivityResult;
+import androidx.activity.result.ActivityResultCallback;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -35,6 +39,9 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
+import com.jaiselrahman.filepicker.activity.FilePickerActivity;
+import com.jaiselrahman.filepicker.config.Configurations;
+import com.jaiselrahman.filepicker.model.MediaFile;
 import com.karankulx.von.Adapter.GridAdapter;
 import com.karankulx.von.Models.Message;
 import com.karankulx.von.Models.Product;
@@ -44,20 +51,19 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
 public class productsPage extends AppCompatActivity {
 
     ActivityProductsPageBinding binding;
-    int PICK_IMAGE_MULTIPLE = 1;
-    String imageEncoded;
-    List<String> imagesEncodedList;
     FirebaseAuth firebaseAuth;
     FirebaseDatabase database;
     FirebaseStorage firebaseStorage;
     public String userId;
     ArrayList<Product> products;
+    ArrayList<Product> temp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +76,7 @@ public class productsPage extends AppCompatActivity {
 
         userId = getIntent().getStringExtra("userId");
         products = new ArrayList<>();
+        temp = new ArrayList<>();
 
         firebaseAuth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
@@ -82,14 +89,28 @@ public class productsPage extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
                     products.clear();
+                    temp.clear();
                     for (DataSnapshot snapshot1 : snapshot.getChildren()) {
                         Product p = snapshot1.getValue(Product.class);
-                        products.add(p);
+                        temp.add(p);
                     };
                 };
 
-                GridAdapter gridAdapter = new GridAdapter(productsPage.this, products);
-                binding.gridview.setAdapter(gridAdapter);
+                if (snapshot.exists()) {
+                    if (temp.size() <= 30) {
+                        for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+                            Product p = snapshot1.getValue(Product.class);
+                            products.add(p);
+                        };
+                    } else {
+                        Toast.makeText(productsPage.this, "max 30 items allowed, please delete items", Toast.LENGTH_SHORT).show();
+                    };
+
+                    Collections.reverse(products);
+                    GridAdapter gridAdapter = new GridAdapter(productsPage.this, products);
+                    binding.gridview.setAdapter(gridAdapter);
+                };
+
             }
 
             @Override
@@ -122,12 +143,8 @@ public class productsPage extends AppCompatActivity {
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.actionAdd:
-                Intent intent = new Intent();
-                intent.setType("image/*");
-                intent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-                intent.setAction(Intent.ACTION_GET_CONTENT);
-                startActivityForResult(Intent.createChooser(intent,"Select Picture"), PICK_IMAGE_MULTIPLE);
-                return true;
+                imagePicker();
+                break;
 
             case R.id.actionDelete:
                 showDialog(this, "Delete Items", "This will delete all items");
@@ -158,6 +175,69 @@ public class productsPage extends AppCompatActivity {
         builder.show();
     }
 
+    private void imagePicker() {
+        Intent intent = new Intent(productsPage.this, FilePickerActivity.class);
+        intent.putExtra(FilePickerActivity.CONFIGS, new Configurations.Builder()
+                .setCheckPermission(true)
+                .setShowImages(true)
+                .setShowVideos(false)
+                .enableImageCapture(true)
+                .setMaxSelection(4)
+                .setSkipZeroSizeFiles(true)
+                .build());
+        startActivityIntent.launch(intent);
+    }
+
+    ActivityResultLauncher<Intent> startActivityIntent = registerForActivityResult(
+            new ActivityResultContracts.StartActivityForResult(),
+            new ActivityResultCallback<ActivityResult>() {
+                @Override
+                public void onActivityResult(ActivityResult result) {
+                    if (result.getData() != null) {
+                        ArrayList<MediaFile> mediaFiles = result.getData().getParcelableArrayListExtra(FilePickerActivity.MEDIA_FILES);
+                        for (int i = 0; i < mediaFiles.size(); i++) {
+                            ProgressDialog progressDialog = new ProgressDialog(productsPage.this);
+                            progressDialog.setMessage("wait sending...");
+                            progressDialog.setCanceledOnTouchOutside(false);
+                            progressDialog.setCancelable(false);
+                            progressDialog.show();
+                            Calendar calender = Calendar.getInstance();
+                            Uri uri = mediaFiles.get(i).getUri();
+                            Bitmap bmp = null;
+                            try {
+                                bmp = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+                                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                                bmp.compress(Bitmap.CompressFormat.JPEG, 25, baos);
+                                byte[] data1 = baos.toByteArray();
+                                Log.d("malika", data1.toString());
+                                StorageReference reference = firebaseStorage.getReference().child("sheets").child(userId).child(calender.getTimeInMillis() + "");
+                                reference.putBytes(data1).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                                        if (task.isSuccessful()) {
+                                            reference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                                @Override
+                                                public void onSuccess(Uri uri) {
+                                                    String filePath = uri.toString();
+                                                    Calendar calender = Calendar.getInstance();
+                                                    Product p = new Product(filePath, calender.getTimeInMillis());
+                                                    database.getReference().child("sheets").child(userId).push().setValue(p);
+                                                    progressDialog.dismiss();
+                                                }
+                                            });
+                                        }
+                                    }
+                                });
+                            } catch (IOException e) {
+                                progressDialog.dismiss();
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                }
+            });
+
+
     private void deleteItems() {
         database.getReference().child("sheets").child(userId).addValueEventListener(new ValueEventListener() {
             @Override
@@ -171,7 +251,6 @@ public class productsPage extends AppCompatActivity {
                         progressDialog.show();
                         Product p = snapshot1.getValue(Product.class);
                         StorageReference photoRef = FirebaseStorage.getInstance().getReferenceFromUrl(p.getPhotourl());
-                        Log.d("lund", p.getPhotourl());
                         photoRef.delete().addOnSuccessListener(new OnSuccessListener<Void>() {
                             @Override
                             public void onSuccess(Void unused) {
@@ -196,110 +275,6 @@ public class productsPage extends AppCompatActivity {
         });
     };
 
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        try {
-            // When an Image is picked
-            if (requestCode == PICK_IMAGE_MULTIPLE && resultCode == RESULT_OK
-                    && null != data) {
-                // Get the Image from data
-
-                String[] filePathColumn = { MediaStore.Images.Media.DATA };
-                imagesEncodedList = new ArrayList<String>();
-                if(data.getData()!=null){
-
-                    Uri mImageUri=data.getData();
-
-                    // Get the cursor
-                    Cursor cursor = getContentResolver().query(mImageUri,
-                            filePathColumn, null, null, null);
-                    // Move to first row
-                    cursor.moveToFirst();
-
-                    int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                    imageEncoded  = cursor.getString(columnIndex);
-                    cursor.close();
-
-                } else {
-                    if (data.getClipData() != null) {
-                        ClipData mClipData = data.getClipData();
-                        ArrayList<Uri> mArrayUri = new ArrayList<Uri>();
-                        for (int i = 0; i < mClipData.getItemCount(); i++) {
-                            ClipData.Item item = mClipData.getItemAt(i);
-                            Uri uri = item.getUri();
-                            mArrayUri.add(uri);
-                            // Get the cursor
-                            Cursor cursor = getContentResolver().query(uri, filePathColumn, null, null, null);
-                            // Move to first row
-                            cursor.moveToFirst();
-
-                            int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                            imageEncoded  = cursor.getString(columnIndex);
-                            imagesEncodedList.add(imageEncoded);
-                            cursor.close();
-
-                        }
-                        Log.v("LOG_TAG", "Selected Images" + mArrayUri.size());
-
-                        if (mArrayUri.size() <= 5) {
-
-                            for (Uri uri : mArrayUri) {
-                                ProgressDialog progressDialog = new ProgressDialog(productsPage.this);
-                                progressDialog.setMessage("wait sending...");
-                                progressDialog.setCanceledOnTouchOutside(false);
-                                progressDialog.setCancelable(false);
-                                progressDialog.show();
-                                Calendar calender = Calendar.getInstance();
-                                Bitmap bmp = null;
-                                try {
-                                    bmp = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
-                                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                                    bmp.compress(Bitmap.CompressFormat.JPEG, 25, baos);
-                                    byte[] data1 = baos.toByteArray();
-                                    Log.d("malika", data.toString());
-                                    StorageReference reference = firebaseStorage.getReference().child("sheets").child(userId).child(calender.getTimeInMillis() + "");
-                                    reference.putBytes(data1).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                                            if (task.isSuccessful()) {
-                                                reference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                                    @Override
-                                                    public void onSuccess(Uri uri) {
-                                                        String filePath = uri.toString();
-                                                        Calendar calender = Calendar.getInstance();
-                                                        Product p = new Product(filePath, calender.getTimeInMillis());
-                                                        database.getReference().child("sheets").child(userId).push().setValue(p);
-                                                        progressDialog.dismiss();
-                                                    }
-                                                });
-                                            }
-                                        }
-                                    });
-                                } catch (IOException e) {
-                                    progressDialog.dismiss();
-                                    e.printStackTrace();
-                                }
-                            };
-
-                        } else {
-                            Toast.makeText(this, "max 5 photos allowed",
-                                    Toast.LENGTH_LONG).show();
-                        };
-
-                    }
-                }
-            } else {
-                Toast.makeText(this, "You haven't picked Image",
-                        Toast.LENGTH_LONG).show();
-            }
-        } catch (Exception e) {
-            Toast.makeText(this, "Something went wrong", Toast.LENGTH_LONG)
-                    .show();
-        }
-
-        super.onActivityResult(requestCode, resultCode, data);
-    }
 
     @Override
     public boolean onSupportNavigateUp() {

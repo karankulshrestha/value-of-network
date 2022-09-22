@@ -4,10 +4,14 @@ import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.FontRes;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.PopupMenu;
 import androidx.appcompat.widget.SearchView;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
@@ -61,9 +65,10 @@ public class productsPage extends AppCompatActivity {
     FirebaseAuth firebaseAuth;
     FirebaseDatabase database;
     FirebaseStorage firebaseStorage;
+    RecyclerView recyclerView;
+    RecyclerView.LayoutManager layoutManager;
     public String userId;
     ArrayList<Product> products;
-    ArrayList<Product> temp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,11 +81,15 @@ public class productsPage extends AppCompatActivity {
 
         userId = getIntent().getStringExtra("userId");
         products = new ArrayList<>();
-        temp = new ArrayList<>();
 
         firebaseAuth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
         firebaseStorage = FirebaseStorage.getInstance();
+
+        recyclerView = findViewById(R.id.productRecyclerview);
+        layoutManager = new GridLayoutManager(this, 2);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setHasFixedSize(true);
 
         Log.d("lolraj", userId);
 
@@ -89,26 +98,14 @@ public class productsPage extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists()) {
                     products.clear();
-                    temp.clear();
                     for (DataSnapshot snapshot1 : snapshot.getChildren()) {
                         Product p = snapshot1.getValue(Product.class);
-                        temp.add(p);
+                        products.add(p);
                     };
-                };
-
-                if (snapshot.exists()) {
-                    if (temp.size() <= 30) {
-                        for (DataSnapshot snapshot1 : snapshot.getChildren()) {
-                            Product p = snapshot1.getValue(Product.class);
-                            products.add(p);
-                        };
-                    } else {
-                        Toast.makeText(productsPage.this, "max 30 items allowed, please delete items", Toast.LENGTH_SHORT).show();
-                    };
-
                     Collections.reverse(products);
                     GridAdapter gridAdapter = new GridAdapter(productsPage.this, products);
-                    binding.gridview.setAdapter(gridAdapter);
+                    binding.productRecyclerview.setAdapter(gridAdapter);
+                    gridAdapter.notifyDataSetChanged();
                 };
 
             }
@@ -118,16 +115,6 @@ public class productsPage extends AppCompatActivity {
 
             }
         });
-
-        binding.gridview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Intent intent = new Intent(productsPage.this, GridImageViewer.class);
-                intent.putExtra("productImage", products.get(i).getPhotourl());
-                startActivity(intent);
-            }
-        });
-
 
     }
 
@@ -185,6 +172,7 @@ public class productsPage extends AppCompatActivity {
                 .setMaxSelection(4)
                 .setSkipZeroSizeFiles(true)
                 .build());
+
         startActivityIntent.launch(intent);
     }
 
@@ -264,8 +252,8 @@ public class productsPage extends AppCompatActivity {
                             }
                         });
                     };
+                    database.getReference().child("sheets").child(userId).removeValue();
                 };
-                database.getReference().child("sheets").child(userId).removeValue();
             }
 
             @Override

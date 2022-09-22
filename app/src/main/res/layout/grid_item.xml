@@ -4,15 +4,24 @@
     android:id="@+id/grid_item"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingTop="15dp"
-    android:gravity="center">
+    android:layout_height="wrap_content"
+    android:padding="10dp">
 
     <androidx.cardview.widget.CardView
         android:layout_width="150dp"
         android:layout_height="150dp"
         app:cardElevation="0dp"
         app:cardCornerRadius="4dp">
+
+        <ImageView
+            android:id="@+id/selectTick1"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_marginRight="140dp"
+            android:layout_marginTop="-1.5dp"
+            android:visibility="invisible"
+            android:background="@drawable/ic_check"
+            android:gravity="center"></ImageView>
 
     <ImageView
         android:layout_width="150dp"
@@ -25,6 +34,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAlignment="center"
+        android:layout_marginLeft="20dp"
         android:id="@+id/item_name"
         android:text="item"
         android:textColor="#fff"

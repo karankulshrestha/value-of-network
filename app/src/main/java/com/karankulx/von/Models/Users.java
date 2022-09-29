@@ -8,10 +8,11 @@ import androidx.annotation.NonNull;
 public class Users implements Parcelable {
 
     String profilePic, name, email, password, rePassword, phoneNumber, status, uid;
+    Boolean isSelected;
 
     public Users() {};
 
-    public Users(String profilePic, String name, String email, String password, String rePassword, String phoneNumber, String status, String uid) {
+    public Users(String profilePic, String name, String email, String password, String rePassword, String phoneNumber, String status, String uid, Boolean isSelected) {
         this.profilePic = profilePic;
         this.name = name;
         this.email = email;
@@ -20,6 +21,15 @@ public class Users implements Parcelable {
         this.phoneNumber = phoneNumber;
         this.status = status;
         this.uid = uid;
+        this.isSelected = isSelected;
+    }
+
+    public Boolean getSelected() {
+        return isSelected;
+    }
+
+    public void setSelected(Boolean selected) {
+        isSelected = selected;
     }
 
     public Users(String email, String password, String rePassword) {

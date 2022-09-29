@@ -13,16 +13,6 @@
         app:cardElevation="0dp"
         app:cardCornerRadius="4dp">
 
-        <ImageView
-            android:id="@+id/selectTick1"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:layout_marginRight="140dp"
-            android:layout_marginTop="-1.5dp"
-            android:visibility="invisible"
-            android:background="@drawable/ic_check"
-            android:gravity="center"></ImageView>
-
     <ImageView
         android:layout_width="150dp"
         android:layout_height="150dp"
@@ -40,5 +30,15 @@
         android:textColor="#fff"
         android:textSize="12sp"
         android:layout_marginTop="6dp"/>
+
+    <ImageView
+        android:id="@+id/selectTick1"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_marginRight="140dp"
+        android:layout_marginTop="-1.5dp"
+        android:visibility="gone"
+        android:background="@drawable/ic_check"
+        android:gravity="center"/>
 
 </LinearLayout>

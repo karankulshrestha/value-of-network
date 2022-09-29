@@ -59,7 +59,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-public class productsPage extends AppCompatActivity {
+public class productsPage extends AppCompatActivity implements productListener {
 
     ActivityProductsPageBinding binding;
     FirebaseAuth firebaseAuth;
@@ -208,7 +208,7 @@ public class productsPage extends AppCompatActivity {
                                                 public void onSuccess(Uri uri) {
                                                     String filePath = uri.toString();
                                                     Calendar calender = Calendar.getInstance();
-                                                    Product p = new Product(filePath, calender.getTimeInMillis());
+                                                    Product p = new Product(filePath, calender.getTimeInMillis(), false);
                                                     database.getReference().child("sheets").child(userId).push().setValue(p);
                                                     progressDialog.dismiss();
                                                 }
@@ -270,4 +270,8 @@ public class productsPage extends AppCompatActivity {
         return true;
     }
 
+    @Override
+    public void onProductShowAction(Boolean isSelected) {
+        if (isSelected) {};
+    }
 }

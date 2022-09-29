@@ -52,7 +52,6 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
     boolean isSelectAll = false;
     MainViewModel mainViewModel;
     ArrayList<Users> selectedUsers = new ArrayList<>();
-    FirebaseDatabase database;
 
     public ContactAdapter(ArrayList<Users> contactDetails, Context context) {
         this.contactDetails = contactDetails;

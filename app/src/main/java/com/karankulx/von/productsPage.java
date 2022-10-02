@@ -159,7 +159,11 @@ public class productsPage extends AppCompatActivity {
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
             // Inflate a menu resource providing context menu items
             MenuInflater inflater = mode.getMenuInflater();
-            inflater.inflate(R.menu.context_menu, menu);
+            if (userId.equals(firebaseAuth.getUid())) {
+                inflater.inflate(R.menu.user_sheet_menu, menu);
+            } else {
+                inflater.inflate(R.menu.sheet_menu, menu);
+            };
             context_menu = menu;
             return true;
         }
@@ -172,8 +176,35 @@ public class productsPage extends AppCompatActivity {
         @Override
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
             switch (item.getItemId()) {
-                case R.id.groupBtn:
-                    Toast.makeText(getApplicationContext(), "yo yo", Toast.LENGTH_SHORT).show();
+                case R.id.addBtn:
+                    Toast.makeText(getApplicationContext(), "added successfully", Toast.LENGTH_SHORT).show();
+                    for (Product product : multiselect_list) {
+                        Calendar calender = Calendar.getInstance();
+                        product.setTimeStamp(calender.getTimeInMillis());
+                        database.getReference().child("sheets").child(firebaseAuth.getUid()).push().setValue(product);
+                    };
+                    return true;
+                case R.id.deleteBtn:
+                    for (Product product : multiselect_list) {
+                        database.getReference().child("sheets").child(userId).addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                    Product p = dataSnapshot.getValue(Product.class);
+                                    if (product.getTimeStamp().equals(p.getTimeStamp())) {
+                                        Log.d("honey", dataSnapshot.getKey());
+                                        database.getReference().child("sheets").child(userId).child(dataSnapshot.getKey()).removeValue();
+                                        mActionMode.setTitle("" + 0);
+                                    };
+                                };
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+                    };
                     return true;
                 default:
                     return false;

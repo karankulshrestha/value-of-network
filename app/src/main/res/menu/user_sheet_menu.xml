@@ -1,0 +1,12 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+
+    <item
+        android:id="@+id/deleteBtn"
+        android:icon="@drawable/ic_baseline_delete_24"
+        android:orderInCategory="400"
+        android:title="ALL"
+        app:showAsAction="always" />
+
+</menu>

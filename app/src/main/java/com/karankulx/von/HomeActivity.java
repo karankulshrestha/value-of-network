@@ -185,6 +185,12 @@ public class HomeActivity extends AppCompatActivity {
                 showDialog(this, "My Status", "select the relevent option for you");
                 break;
 
+            case R.id.mySheet:
+                Intent intent1 = new Intent(HomeActivity.this, productsPage.class);
+                intent1.putExtra("userId", firebaseAuth.getUid());
+                startActivity(intent1);
+                break;
+
         }
         return super.onOptionsItemSelected(item);
     }

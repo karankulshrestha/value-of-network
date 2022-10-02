@@ -7,6 +7,9 @@
     <item
         android:id="@+id/setStatus"
         android:title="Status" />
+    <item
+        android:id="@+id/mySheet"
+        android:title="My Sheet" />
 
     <item
         android:id="@+id/signOut"

@@ -24,6 +24,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.util.Log;
+import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -50,6 +51,7 @@ import com.karankulx.von.Adapter.GridAdapter;
 import com.karankulx.von.Models.Message;
 import com.karankulx.von.Models.Product;
 import com.karankulx.von.databinding.ActivityProductsPageBinding;
+import com.karankulx.von.utils.RecyclerItemClickListener;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -59,7 +61,10 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-public class productsPage extends AppCompatActivity implements productListener {
+public class productsPage extends AppCompatActivity {
+
+    ActionMode mActionMode;
+    Menu context_menu;
 
     ActivityProductsPageBinding binding;
     FirebaseAuth firebaseAuth;
@@ -68,7 +73,10 @@ public class productsPage extends AppCompatActivity implements productListener {
     RecyclerView recyclerView;
     RecyclerView.LayoutManager layoutManager;
     public String userId;
+    boolean isMultiSelect = false;
     ArrayList<Product> products;
+    ArrayList<Product> multiselect_list;
+    public GridAdapter gridAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,10 +89,12 @@ public class productsPage extends AppCompatActivity implements productListener {
 
         userId = getIntent().getStringExtra("userId");
         products = new ArrayList<>();
+        multiselect_list = new ArrayList<>();
 
         firebaseAuth = FirebaseAuth.getInstance();
         database = FirebaseDatabase.getInstance();
         firebaseStorage = FirebaseStorage.getInstance();
+
 
         recyclerView = findViewById(R.id.productRecyclerview);
         layoutManager = new GridLayoutManager(this, 2);
@@ -103,7 +113,7 @@ public class productsPage extends AppCompatActivity implements productListener {
                         products.add(p);
                     };
                     Collections.reverse(products);
-                    GridAdapter gridAdapter = new GridAdapter(productsPage.this, products);
+                    gridAdapter = new GridAdapter(productsPage.this, products, multiselect_list);
                     binding.productRecyclerview.setAdapter(gridAdapter);
                     gridAdapter.notifyDataSetChanged();
                 };
@@ -116,7 +126,68 @@ public class productsPage extends AppCompatActivity implements productListener {
             }
         });
 
+        binding.productRecyclerview.addOnItemTouchListener(new RecyclerItemClickListener(this, recyclerView, new RecyclerItemClickListener.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                if (isMultiSelect) {
+                    multi_select(position);
+                } else {
+                    Toast.makeText(getApplicationContext(), "Details Page", Toast.LENGTH_SHORT).show();
+                };
+            }
+
+            @Override
+            public void onItemLongClick(View view, int position) {
+                if (!isMultiSelect) {
+                    multiselect_list = new ArrayList<Product>();
+                    isMultiSelect = true;
+
+                    if (mActionMode == null) {
+                        mActionMode = startActionMode(mActionModeCallback);
+                    };
+                };
+                multi_select(position);
+            }
+        }));
+
+
     }
+
+    private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
+
+        @Override
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+            // Inflate a menu resource providing context menu items
+            MenuInflater inflater = mode.getMenuInflater();
+            inflater.inflate(R.menu.context_menu, menu);
+            context_menu = menu;
+            return true;
+        }
+
+        @Override
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            return false; // Return false if nothing is done
+        }
+
+        @Override
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.groupBtn:
+                    Toast.makeText(getApplicationContext(), "yo yo", Toast.LENGTH_SHORT).show();
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        @Override
+        public void onDestroyActionMode(ActionMode mode) {
+            mActionMode = null;
+            isMultiSelect = false;
+            multiselect_list = new ArrayList<Product>();
+            refreshAdapter();
+        }
+    };
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -139,6 +210,32 @@ public class productsPage extends AppCompatActivity implements productListener {
         }
         return super.onOptionsItemSelected(item);
     }
+
+    public void multi_select(int position) {
+        if (mActionMode != null) {
+            if (multiselect_list.contains(products.get(position)))
+                multiselect_list.remove(products.get(position));
+            else
+                multiselect_list.add(products.get(position));
+
+            if (multiselect_list.size() > 0)
+                mActionMode.setTitle("" + multiselect_list.size());
+            else
+                mActionMode.setTitle("");
+
+            refreshAdapter();
+
+        }
+
+    }
+
+    public void refreshAdapter()
+    {
+        gridAdapter.selectedProducts=multiselect_list;
+        gridAdapter.products=products;
+        gridAdapter.notifyDataSetChanged();
+    }
+
 
 
     public void showDialog(Activity activity, String title, CharSequence message) {
@@ -254,6 +351,7 @@ public class productsPage extends AppCompatActivity implements productListener {
                     };
                     database.getReference().child("sheets").child(userId).removeValue();
                 };
+                refreshAdapter();
             }
 
             @Override
@@ -268,10 +366,5 @@ public class productsPage extends AppCompatActivity implements productListener {
     public boolean onSupportNavigateUp() {
         onBackPressed();
         return true;
-    }
-
-    @Override
-    public void onProductShowAction(Boolean isSelected) {
-        if (isSelected) {};
     }
 }

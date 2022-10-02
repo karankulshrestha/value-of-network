@@ -9,12 +9,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.ContentResolver;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.util.Log;
+import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -32,8 +34,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.karankulx.von.Adapter.ContactAdapter;
 import com.karankulx.von.Models.Contact;
+import com.karankulx.von.Models.Product;
 import com.karankulx.von.Models.Users;
 import com.karankulx.von.databinding.ActivityContactSyncBinding;
+import com.karankulx.von.utils.RecyclerItemClickListener;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -46,11 +50,16 @@ public class ContactSync extends AppCompatActivity {
     public static final int REQUEST_READ_CONTACTS = 79;
 
     FirebaseAuth mAuth;
+    ActionMode mActionMode;
+    Menu context_menu;
 
     private RecyclerView localContactDetails;
     private ContactAdapter adapter;
     ArrayList<Users> requiredContacts;
+    boolean isMultiSelect = false;
+    boolean isSelectAll = false;
     ArrayList<Users> cloudContacts;
+    ArrayList<Users> multiselect_list = new ArrayList<>();
 
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -111,7 +120,7 @@ public class ContactSync extends AppCompatActivity {
                 }
 
 
-                adapter = new ContactAdapter(requiredContacts, ContactSync.this);
+                adapter = new ContactAdapter(requiredContacts, multiselect_list, ContactSync.this);
                 LinearLayoutManager manager = new LinearLayoutManager(ContactSync.this);
                 localContactDetails.setHasFixedSize(true);
                 localContactDetails.setLayoutManager(manager);
@@ -124,6 +133,111 @@ public class ContactSync extends AppCompatActivity {
 
             }
         });
+
+        binding.localContactDetails.addOnItemTouchListener(new RecyclerItemClickListener(this, localContactDetails, new RecyclerItemClickListener.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                if (isMultiSelect) {
+                    multi_select(position);
+                };
+            }
+
+            @Override
+            public void onItemLongClick(View view, int position) {
+                if (!isMultiSelect) {
+                    multiselect_list = new ArrayList<Users>();
+                    isMultiSelect = true;
+
+                    if (mActionMode == null) {
+                        mActionMode = startActionMode(mActionModeCallback);
+                    };
+                };
+                multi_select(position);
+            }
+        }));
+
+
+    }
+
+    public void multi_select(int position) {
+        if (mActionMode != null) {
+            if (multiselect_list.contains(requiredContacts.get(position)))
+                multiselect_list.remove(requiredContacts.get(position));
+            else
+                multiselect_list.add(requiredContacts.get(position));
+
+            if (multiselect_list.size() > 0)
+                mActionMode.setTitle("" + multiselect_list.size());
+            else
+                mActionMode.setTitle("");
+
+            refreshAdapter();
+
+        }
+
+    }
+
+    private ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
+
+        @Override
+        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
+            // Inflate a menu resource providing context menu items
+            MenuInflater inflater = mode.getMenuInflater();
+            inflater.inflate(R.menu.context_menu, menu);
+            context_menu = menu;
+            return true;
+        }
+
+        @Override
+        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
+            return false; // Return false if nothing is done
+        }
+
+        @Override
+        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.groupBtn:
+                    if (multiselect_list.size() > 0) {
+                        Intent intent = new Intent(ContactSync.this, GroupBuildingActivity.class);
+                        intent.putExtra("gUser list", multiselect_list);
+                        Log.d("jamesbhai", String.valueOf(multiselect_list.size()));
+                        startActivity(intent);
+                    }
+                    break;
+                case R.id.selectAll:
+                    if (multiselect_list.size() == requiredContacts.size()) {
+                        isSelectAll = false;
+                        //Clear select Array List
+                        multiselect_list.clear();
+                    } else {
+                        // when all items are not selected
+                        isSelectAll = true;
+                        multiselect_list.clear();
+                        multiselect_list.addAll(requiredContacts);
+                    }
+                    mActionMode.setTitle("" + multiselect_list.size());
+                    refreshAdapter();
+                    break;
+                default:
+                    return false;
+            }
+            return true;
+        }
+
+        @Override
+        public void onDestroyActionMode(ActionMode mode) {
+            mActionMode = null;
+            isMultiSelect = false;
+            multiselect_list = new ArrayList<Users>();
+            refreshAdapter();
+        }
+    };
+
+    public void refreshAdapter()
+    {
+        adapter.multiselect_list=multiselect_list;
+        adapter.contactDetails=requiredContacts;
+        adapter.notifyDataSetChanged();
     }
 
 

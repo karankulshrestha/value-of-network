@@ -41,7 +41,8 @@ public class sheetAdapter extends RecyclerView.Adapter<sheetAdapter.sheetViewHol
     @Override
     public void onBindViewHolder(@NonNull sheetAdapter.sheetViewHolder holder, int position) {
         Users user = users.get(position);
-        holder.binding.chaterName.setText(user.getName() + " ~ " + user.getPhoneNumber());
+        holder.binding.chaterName.setText(user.getName());
+        holder.binding.phoneNumber.setText(" ~ " + user.getPhoneNumber());
         Glide.with(context).load(user.getProfilePic())
                 .diskCacheStrategy(DiskCacheStrategy.ALL).into(holder.binding.profileImage);
         holder.binding.mainBody.setOnClickListener(new View.OnClickListener() {

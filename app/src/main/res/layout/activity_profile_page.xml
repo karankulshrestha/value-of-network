@@ -60,6 +60,7 @@
         <EditText
             android:id="@+id/nameField"
             android:layout_width="315dp"
+            android:maxLength="7"
             android:layout_height="48dp"
             android:layout_margin="5dp"
             android:background="@drawable/editbottomline"
@@ -100,6 +101,7 @@
             android:id="@+id/statusField"
             android:layout_width="294dp"
             android:layout_height="46dp"
+            android:maxLength="50"
             android:layout_margin="5dp"
             android:background="@drawable/editbottomline"
             android:ems="10"

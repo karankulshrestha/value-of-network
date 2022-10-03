@@ -64,7 +64,7 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UsersViewHol
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
                                 String lastMsg = snapshot.child("lastMsg").getValue(String.class);
                                 if (snapshot.exists()) {
-                                    long time = snapshot.child("lastMsgTime").getValue(Long.class);
+                                    Long time = snapshot.child("lastMsgTime").getValue(Long.class);
                                     SimpleDateFormat dateFormat = new SimpleDateFormat("hh:mm a");
                                     holder.binding.lastMessage.setText(lastMsg);
                                     holder.binding.lastMsgTime.setText(dateFormat.format(new Date(time)));
@@ -84,7 +84,8 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UsersViewHol
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 Users users = snapshot.getValue(Users.class);
-                holder.binding.chaterName.setText(users.getName() + " ~ " + users.getPhoneNumber());
+                holder.binding.chaterName.setText(users.getName());
+                holder.binding.phoneNumber.setText(" ~ " + users.getPhoneNumber());
                 Glide.with(context).load(users.getProfilePic())
                         .diskCacheStrategy(DiskCacheStrategy.ALL).into(holder.binding.profileImage);
 

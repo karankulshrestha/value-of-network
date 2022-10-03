@@ -69,6 +69,7 @@ import com.jaiselrahman.filepicker.activity.FilePickerActivity;
 import com.jaiselrahman.filepicker.config.Configurations;
 import com.jaiselrahman.filepicker.model.MediaFile;
 import com.karankulx.von.Adapter.GroupMessageAdapter;
+import com.karankulx.von.Models.GroupLastMessage;
 import com.karankulx.von.Models.Groups;
 import com.karankulx.von.Models.Message;
 import com.karankulx.von.Models.Users;
@@ -198,12 +199,14 @@ public class groupChatActivity extends AppCompatActivity{
                 String messageBox = binding.messageText.getText().toString();
                 binding.messageText.setText("");
                 Date date = new Date();
+                Calendar calender = Calendar.getInstance();
                 groupMessage Message = new groupMessage(senderUid, messageBox, date.getTime());
                 for (int i = 0; i < usersList.size(); i++) {
                     database.getReference().child("groupChats")
                             .child(groupId).child(usersList.get(i).getUid()).push().setValue(Message);
                 };
-
+                GroupLastMessage groupLastMessage = new GroupLastMessage(messageBox, calender.getTimeInMillis());
+                database.getReference().child("groupChats").child(groupId).child(groupId + "-123").setValue(groupLastMessage);
             }
         });
 

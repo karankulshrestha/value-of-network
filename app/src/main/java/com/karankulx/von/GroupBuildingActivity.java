@@ -36,6 +36,7 @@ import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.karankulx.von.Fragments.GroupFragment;
+import com.karankulx.von.Models.GroupLastMessage;
 import com.karankulx.von.Models.Groups;
 import com.karankulx.von.Models.Users;
 import com.karankulx.von.databinding.ActivityGroupBuildingBinding;
@@ -174,6 +175,8 @@ public class GroupBuildingActivity extends AppCompatActivity {
 
                                                     Groups group = new Groups(rand, groupName, groupSummary, filePath, uid, groupCheck, gUsers );
                                                     database.getReference().child("groups").child(uid).child(rand).setValue(group);
+                                                    GroupLastMessage groupLastMessage = new GroupLastMessage("Tap to chat", calender.getTimeInMillis());
+                                                    database.getReference().child("groupChats").child(rand).child(rand + "-123").setValue(groupLastMessage);
                                                     Toast.makeText(GroupBuildingActivity.this, "group created", Toast.LENGTH_SHORT).show();
                                                     Intent mainIntent = new Intent(GroupBuildingActivity.this, HomeActivity.class);
                                                     mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

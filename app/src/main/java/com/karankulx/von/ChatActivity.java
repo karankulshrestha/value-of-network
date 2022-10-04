@@ -162,42 +162,44 @@ public class ChatActivity extends AppCompatActivity{
             @Override
             public void onClick(View view) {
                 String messageBox = binding.messageText.getText().toString();
-                binding.messageText.setText("");
-                Date date = new Date();
-                Message message = new Message(messageBox, senderUid, date.getTime());
+                if (messageBox.length() > 0) {
+                    binding.messageText.setText("");
+                    Date date = new Date();
+                    Message message = new Message(messageBox, senderUid, date.getTime());
 
-                HashMap<String, Object> lastMsgObj = new HashMap<>();
-                lastMsgObj.put("lastMsg", message.getMessage());
-                lastMsgObj.put("lastMsgTime", date.getTime());
+                    HashMap<String, Object> lastMsgObj = new HashMap<>();
+                    lastMsgObj.put("lastMsg", message.getMessage());
+                    lastMsgObj.put("lastMsgTime", date.getTime());
 
-                database.getReference().child("chats").child(senderRoom)
-                        .updateChildren(lastMsgObj);
-                database.getReference().child("chats").child(receiverRoom)
-                        .updateChildren(lastMsgObj);
+                    database.getReference().child("chats").child(senderRoom)
+                            .updateChildren(lastMsgObj);
+                    database.getReference().child("chats").child(receiverRoom)
+                            .updateChildren(lastMsgObj);
 
-                database.getReference().child("recentChats").child(senderUid).child(receiverUid);
+                    database.getReference().child("recentChats").child(senderUid).child(receiverUid);
 
-                database.getReference().child("chats")
-                        .child(senderRoom)
-                        .child("messages")
-                        .push()
-                        .setValue(message)
-                        .addOnSuccessListener(new OnSuccessListener<Void>() {
-                            @Override
-                            public void onSuccess(Void unused) {
-                                database.getReference().child("chats")
-                                        .child(receiverRoom)
-                                        .child("messages")
-                                        .push()
-                                        .setValue(message).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                            @Override
-                                            public void onSuccess(Void unused) {
-                                                database.getReference().child("recentChats").child(receiverUid).child(senderUid);
-                                            }
-                                        });
+                    database.getReference().child("chats")
+                            .child(senderRoom)
+                            .child("messages")
+                            .push()
+                            .setValue(message)
+                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void unused) {
+                                    database.getReference().child("chats")
+                                            .child(receiverRoom)
+                                            .child("messages")
+                                            .push()
+                                            .setValue(message).addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                @Override
+                                                public void onSuccess(Void unused) {
+                                                    database.getReference().child("recentChats").child(receiverUid).child(senderUid);
+                                                }
+                                            });
 
-                            }
-                        });
+                                }
+                            });
+                };
             }
         });
 

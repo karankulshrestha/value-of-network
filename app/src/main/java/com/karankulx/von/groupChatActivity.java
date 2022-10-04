@@ -199,16 +199,18 @@ public class groupChatActivity extends AppCompatActivity{
             @Override
             public void onClick(View view) {
                 String messageBox = binding.messageText.getText().toString();
-                binding.messageText.setText("");
-                Date date = new Date();
-                Calendar calender = Calendar.getInstance();
-                groupMessage Message = new groupMessage(senderUid, messageBox, date.getTime());
-                for (int i = 0; i < usersList.size(); i++) {
-                    database.getReference().child("groupChats")
-                            .child(groupId).child(usersList.get(i).getUid()).push().setValue(Message);
+                if (messageBox.length() > 0) {
+                    binding.messageText.setText("");
+                    Date date = new Date();
+                    Calendar calender = Calendar.getInstance();
+                    groupMessage Message = new groupMessage(senderUid, messageBox, date.getTime());
+                    for (int i = 0; i < usersList.size(); i++) {
+                        database.getReference().child("groupChats")
+                                .child(groupId).child(usersList.get(i).getUid()).push().setValue(Message);
+                    };
+                    GroupLastMessage groupLastMessage = new GroupLastMessage(messageBox, calender.getTimeInMillis());
+                    database.getReference().child("groupChats").child(groupId).child(groupId + "-123").setValue(groupLastMessage);
                 };
-                GroupLastMessage groupLastMessage = new GroupLastMessage(messageBox, calender.getTimeInMillis());
-                database.getReference().child("groupChats").child(groupId).child(groupId + "-123").setValue(groupLastMessage);
             }
         });
 

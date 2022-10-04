@@ -14,6 +14,8 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.media.MediaMetadataRetriever;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -33,6 +35,7 @@ import android.webkit.MimeTypeMap;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import androidx.activity.result.ActivityResult;
@@ -408,8 +411,18 @@ public class ChatActivity extends AppCompatActivity{
                         ArrayList<MediaFile> mediaFiles = result.getData().getParcelableArrayListExtra(FilePickerActivity.MEDIA_FILES);
                         Uri uri = mediaFiles.get(0).getUri();
                         String rPath = getPathFromUri(ChatActivity.this, uri);
-                        Log.d("malkova", rPath);
-                        LoadFfmpegLibrary(rPath, uri);
+                        MediaMetadataRetriever retriever = new MediaMetadataRetriever();
+                        retriever.setDataSource(ChatActivity.this, uri);
+                        String time = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION);
+                        long timeInMillisec = Long.parseLong(time);
+                        if (timeInMillisec > 70000) {
+                            Log.d("burger", String.valueOf(timeInMillisec));
+                            Toast.makeText(ChatActivity.this, "Max 1 minute video allowed", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Log.d("burger", String.valueOf(timeInMillisec));
+                            Log.d("malkova", rPath);
+                            LoadFfmpegLibrary(rPath, uri);
+                        };
                     }
                 }
             });

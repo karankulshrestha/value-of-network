@@ -68,13 +68,9 @@ public class GroupDetails extends AppCompatActivity {
 
         for (Users users1 : usersList) {
             if (groupCreator.equals(users1.getUid())) {
-                binding.adminName.setText(users1.getName() + " ~ " + users1.getPhoneNumber());
-                binding.creator.setVisibility(View.VISIBLE);
-                Glide.with(GroupDetails.this).load(users1.getProfilePic())
-                        .diskCacheStrategy(DiskCacheStrategy.ALL).into(binding.adminImage);
-                if (isPrivate) {
-                    binding.admin.setVisibility(View.VISIBLE);
-                };
+                Users user = users1;
+                usersList.remove(users1);
+                usersList.add(0, user);
             };
         };
 
@@ -92,7 +88,7 @@ public class GroupDetails extends AppCompatActivity {
         recyclerView = findViewById(R.id.groupMembers);
 
         // initializing our adapter class.
-        adapter = new groupUserAdapter(GroupDetails.this, usersList);
+        adapter = new groupUserAdapter(GroupDetails.this, usersList, isPrivate, groupCreator);
 
         // adding layout manager to our recycler view.
         LinearLayoutManager manager = new LinearLayoutManager(this);
@@ -157,7 +153,13 @@ public class GroupDetails extends AppCompatActivity {
             if ((item.getName() + " ~ " + item.getPhoneNumber()).toLowerCase().contains(text.toLowerCase())) {
                 // if the item is matched we are
                 // adding it to our filtered list.
-                filteredlist.add(item);
+                if (!item.getUid().equals(groupCreator)) {
+                    findViewById(R.id.creator).setVisibility(View.INVISIBLE);
+                    findViewById(R.id.admin).setVisibility(View.INVISIBLE);
+                    filteredlist.add(item);
+                } else {
+                    filteredlist.add(item);
+                };
             }
         }
         if (filteredlist.isEmpty()) {

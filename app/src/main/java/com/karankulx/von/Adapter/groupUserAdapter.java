@@ -28,11 +28,14 @@ public class groupUserAdapter extends RecyclerView.Adapter<groupUserAdapter.grou
 
     private ArrayList<Users> groupUsers;
     Context context;
-    FirebaseDatabase database;
+    boolean isPrivate;
+    String groupCreator;
 
-    public groupUserAdapter(Context context, ArrayList<Users> groupUsers) {
+    public groupUserAdapter(Context context, ArrayList<Users> groupUsers, boolean isPrivate, String groupCreator) {
         this.groupUsers = groupUsers;
         this.context = context;
+        this.isPrivate = isPrivate;
+        this.groupCreator = groupCreator;
     };
 
     // method for filtering our recyclerview items.
@@ -51,7 +54,15 @@ public class groupUserAdapter extends RecyclerView.Adapter<groupUserAdapter.grou
     @Override
     public void onBindViewHolder(@NonNull groupUserAdapter.groupViewHolder holder, int position) {
         Users user = groupUsers.get(position);
-        holder.binding.chaterName.setText(user.getName() + " ~ " + user.getPhoneNumber());
+        holder.binding.chaterName.setText(user.getName());
+        holder.binding.phoneNumber.setText("~ " + user.getPhoneNumber());
+        if (groupCreator.equals(user.getUid())) {
+            holder.binding.creator.setVisibility(View.VISIBLE);
+            if (isPrivate) {
+                holder.binding.admin.setVisibility(View.VISIBLE);
+            };
+        };
+
         Glide.with(context).load(user.getProfilePic())
                 .diskCacheStrategy(DiskCacheStrategy.ALL).into(holder.binding.profileImage);
     }

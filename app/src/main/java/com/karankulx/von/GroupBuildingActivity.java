@@ -131,68 +131,77 @@ public class GroupBuildingActivity extends AppCompatActivity {
                 rand = getRandomString(28);
                 groupName = binding.gpName.getText().toString();
                 groupSummary = binding.gSum.getText().toString();
+
                 if (groupName.length() != 0) {
                     if (groupSummary.length() != 0) {
                         if (selectedImage != null) {
-
-                            database.getReference().child("users").addValueEventListener(new ValueEventListener() {
-                                @Override
-                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                                        Users user = dataSnapshot.getValue(Users.class);
-                                        String mUid = user.getUid();
-                                        if (mUid.equals(uid)) {
-                                            gUsers.add(user);
+                            if (groupSummary.length() > 50) {
+                                Toast.makeText(GroupBuildingActivity.this, "max 50 letter allowed in group summary", Toast.LENGTH_SHORT).show();
+                                progressDialog.dismiss();
+                            } else if (groupName.length() > 15) {
+                                Toast.makeText(GroupBuildingActivity.this, "max 15 letter allowed in group name", Toast.LENGTH_SHORT).show();
+                                progressDialog.dismiss();
+                            } else {
+                                database.getReference().child("users").addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                            Users user = dataSnapshot.getValue(Users.class);
+                                            String mUid = user.getUid();
+                                            if (mUid.equals(uid)) {
+                                                gUsers.add(user);
+                                            }
                                         }
                                     }
-                                }
 
-                                @Override
-                                public void onCancelled(@NonNull DatabaseError error) {
-
-                                }
-                            });
-
-
-                            Calendar calender = Calendar.getInstance();
-                            Bitmap bmp = null;
-                            try {
-                                bmp = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedImage);
-                                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                                bmp.compress(Bitmap.CompressFormat.JPEG, 25, baos);
-                                byte[] data = baos.toByteArray();
-                                reference = storage.getReference().child("groups").child("profile-photos").child(calender.getTimeInMillis() + "");
-                                reference.putBytes(data).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
                                     @Override
-                                    public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                                        if (task.isSuccessful()) {
-                                            reference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                                @Override
-                                                public void onSuccess(Uri uri) {
-                                                    filePath = uri.toString();
-                                                    Glide.with(GroupBuildingActivity.this).load(filePath).diskCacheStrategy(DiskCacheStrategy.ALL)
-                                                            .into(binding.profileImage);
+                                    public void onCancelled(@NonNull DatabaseError error) {
 
-                                                    Groups group = new Groups(rand, groupName, groupSummary, filePath, uid, groupCheck, gUsers );
-                                                    database.getReference().child("groups").child(uid).child(rand).setValue(group);
-                                                    GroupLastMessage groupLastMessage = new GroupLastMessage("Tap to chat", calender.getTimeInMillis());
-                                                    database.getReference().child("groupChats").child(rand).child(rand + "-123").setValue(groupLastMessage);
-                                                    Toast.makeText(GroupBuildingActivity.this, "group created", Toast.LENGTH_SHORT).show();
-                                                    Intent mainIntent = new Intent(GroupBuildingActivity.this, HomeActivity.class);
-                                                    mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                                    Log.d("james420", String.valueOf(groupCheck));
-                                                    startActivity(mainIntent);
-                                                    progressDialog.dismiss();
-
-                                                }
-                                            });
-                                        }
                                     }
                                 });
 
-                            } catch (IOException e) {
-                                Toast.makeText(GroupBuildingActivity.this, e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-                            }
+
+                                Calendar calender = Calendar.getInstance();
+                                Bitmap bmp = null;
+                                try {
+                                    bmp = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedImage);
+                                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                                    bmp.compress(Bitmap.CompressFormat.JPEG, 25, baos);
+                                    byte[] data = baos.toByteArray();
+                                    reference = storage.getReference().child("groups").child("profile-photos").child(calender.getTimeInMillis() + "");
+                                    reference.putBytes(data).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                                            if (task.isSuccessful()) {
+                                                reference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                                    @Override
+                                                    public void onSuccess(Uri uri) {
+                                                        filePath = uri.toString();
+                                                        Glide.with(GroupBuildingActivity.this).load(filePath).diskCacheStrategy(DiskCacheStrategy.ALL)
+                                                                .into(binding.profileImage);
+
+                                                        Groups group = new Groups(rand, groupName, groupSummary, filePath, uid, groupCheck, gUsers );
+                                                        database.getReference().child("groups").child(uid).child(rand).setValue(group);
+                                                        GroupLastMessage groupLastMessage = new GroupLastMessage("Tap to chat", calender.getTimeInMillis());
+                                                        database.getReference().child("groupChats").child(rand).child(rand + "-123").setValue(groupLastMessage);
+                                                        Toast.makeText(GroupBuildingActivity.this, "group created", Toast.LENGTH_SHORT).show();
+                                                        Intent mainIntent = new Intent(GroupBuildingActivity.this, HomeActivity.class);
+                                                        mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                                        Log.d("james420", String.valueOf(groupCheck));
+                                                        startActivity(mainIntent);
+                                                        progressDialog.dismiss();
+
+                                                    }
+                                                });
+                                            }
+                                        }
+                                    });
+
+                                } catch (IOException e) {
+                                    Toast.makeText(GroupBuildingActivity.this, e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                                }
+
+                            };
 
                         } else {
                             Toast.makeText(GroupBuildingActivity.this, "Please select group Image", Toast.LENGTH_SHORT).show();

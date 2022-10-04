@@ -108,6 +108,7 @@ public class ChatActivity extends AppCompatActivity{
     ImageView aImages;
     ImageView attach;
     View mLayout;
+    Context context;
 
     ActivityChatBinding binding;
     MessagesAdapter adapter;
@@ -115,7 +116,7 @@ public class ChatActivity extends AppCompatActivity{
 
     String senderRoom, receiverRoom;
     String senderUid, receiverUid;
-    String token;
+    String token, phone;
 
     FirebaseDatabase database;
     FirebaseStorage storage;
@@ -138,6 +139,7 @@ public class ChatActivity extends AppCompatActivity{
         aImages = findViewById(R.id.photos);
         aVideos = findViewById(R.id.videos);
         receiverUid = getIntent().getStringExtra("uid");
+        phone = getIntent().getStringExtra("phoneNumber");
         senderUid = FirebaseAuth.getInstance().getUid();
 
         senderRoom = senderUid + receiverUid;
@@ -229,11 +231,21 @@ public class ChatActivity extends AppCompatActivity{
             }
         });
 
-        binding.toolbar.setOnClickListener(new View.OnClickListener() {
+
+        binding.groupDetails.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(ChatActivity.this, ProfileDetail.class);
                 intent.putExtra("uid", receiverUid);
+                startActivity(intent);
+            }
+        });
+
+        binding.icPhone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(Intent.ACTION_DIAL);
+                intent.setData(Uri.parse("tel:" + phone));
                 startActivity(intent);
             }
         });

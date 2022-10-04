@@ -16,7 +16,6 @@ import com.google.android.exoplayer2.ExoPlayer;
 import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.ui.StyledPlayerView;
 import com.google.firebase.auth.FirebaseAuth;
-import com.karankulx.von.FullScreenImage;
 import com.karankulx.von.GridImageViewer;
 import com.karankulx.von.Models.Message;
 import com.karankulx.von.R;

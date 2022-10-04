@@ -101,6 +101,7 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UsersViewHol
                             intent.putExtra("username", holder.binding.chaterName.getText().toString());
                             intent.putExtra("profileUri", users.getProfilePic());
                             intent.putExtra("uid", users.getUid());
+                            intent.putExtra("phoneNumber", users.getPhoneNumber());
                             intent.putExtra("token", users.getToken());
                             context.startActivity(intent);
                         }

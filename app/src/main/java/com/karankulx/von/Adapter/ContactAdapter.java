@@ -39,6 +39,7 @@ import com.karankulx.von.Models.Contact;
 import com.karankulx.von.Models.MainViewModel;
 import com.karankulx.von.Models.Users;
 import com.karankulx.von.R;
+import com.karankulx.von.databinding.ContactRowBinding;
 import com.karankulx.von.databinding.RowConversationBinding;
 
 import java.io.Serializable;
@@ -66,7 +67,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
     @NonNull
     @Override
     public ContactViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row_conversation, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.contact_row, parent, false);
         return new ContactViewHolder(view);
 
     }
@@ -75,6 +76,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
     public void onBindViewHolder(@NonNull ContactViewHolder holder, int position) {
         Users modal = contactDetails.get(position);
         holder.binding.chaterName.setText(modal.getName());
+        holder.binding.phoneNumber.setText(modal.getPhoneNumber());
         Glide.with(context).load(modal.getProfilePic()).placeholder(R.drawable.userprofile)
                         .diskCacheStrategy(DiskCacheStrategy.ALL).into(holder.binding.profileImage);
 
@@ -84,6 +86,7 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
                 Intent intent = new Intent(context, ChatActivity.class);
                 intent.putExtra("username", holder.binding.chaterName.getText().toString());
                 intent.putExtra("profileUri", modal.getProfilePic());
+                intent.putExtra("phoneNumber", modal.getPhoneNumber());
                 intent.putExtra("uid", modal.getUid());
                 context.startActivity(intent);
             }
@@ -105,11 +108,11 @@ public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ContactV
 
     public class ContactViewHolder extends RecyclerView.ViewHolder {
 
-        RowConversationBinding binding;
+        ContactRowBinding binding;
 
         public ContactViewHolder(View itemView) {
             super(itemView);
-            binding = RowConversationBinding.bind(itemView);
+            binding = ContactRowBinding.bind(itemView);
 
         }
     }

@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
     <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -48,10 +49,6 @@
             android:screenOrientation="portrait"
             android:exported="false"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
-        <activity
-            android:name=".FullScreenImage"
-            android:screenOrientation="portrait"
-            android:exported="false" />
         <activity
             android:name=".ChatActivity"
             android:screenOrientation="portrait"

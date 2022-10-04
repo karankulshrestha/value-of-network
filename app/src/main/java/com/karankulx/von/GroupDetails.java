@@ -87,6 +87,15 @@ public class GroupDetails extends AppCompatActivity {
         binding.numberUsers.setText(tMembers);
         recyclerView = findViewById(R.id.groupMembers);
 
+        binding.thumnail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent1 = new Intent(GroupDetails.this, GridImageViewer.class);
+                intent1.putExtra("productImage", profile);
+                startActivity(intent1);
+            }
+        });
+
         // initializing our adapter class.
         adapter = new groupUserAdapter(GroupDetails.this, usersList, isPrivate, groupCreator);
 

@@ -9,8 +9,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -32,6 +34,9 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 import com.karankulx.von.Models.Users;
 import com.karankulx.von.databinding.ActivityInProfileBinding;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
 
 public class InProfile extends AppCompatActivity {
@@ -117,32 +122,58 @@ public class InProfile extends AppCompatActivity {
             public void onClick(View view) {
                 progressDialog.show();
                 if(selectedImage != null) {
-                    StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("profiles").child(uid);
-                    storageReference.putFile(selectedImage).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                            if (task.isSuccessful()) {
-                                storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                    @Override
-                                    public void onSuccess(Uri uri) {
-                                        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users");
-                                        userRef.child(uid).child("profilePic").setValue(uri.toString());
-                                        userRef.child(uid).child("name").setValue(name.getText().toString());
-                                        userRef.child(uid).child("status").setValue(status.getText().toString());
+                    Bitmap bmp = null;
+                    try {
+                        bmp = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedImage);
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        bmp.compress(Bitmap.CompressFormat.JPEG, 25, baos);
+                        byte[] data = baos.toByteArray();
+                        StorageReference storageReference = FirebaseStorage.getInstance().getReference().child("profiles").child(uid);
+                        storageReference.putBytes(data).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    storageReference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                        @Override
+                                        public void onSuccess(Uri uri) {
+                                            DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users");
+                                            userRef.child(uid).child("profilePic").setValue(uri.toString());
+                                            if (name.getText().toString().length() > 18) {
+                                                Toast.makeText(InProfile.this, "max 18 letter's name allowed", Toast.LENGTH_SHORT).show();
+                                                progressDialog.dismiss();
+                                            } else if (status.getText().toString().length() > 50) {
+                                                Toast.makeText(InProfile.this, "max 50 letter's status allowed", Toast.LENGTH_SHORT).show();
+                                                progressDialog.dismiss();
+                                            } else {
+                                                userRef.child(uid).child("name").setValue(name.getText().toString());
+                                                userRef.child(uid).child("status").setValue(status.getText().toString());
 
-                                        Toast.makeText(InProfile.this, "profile updated.", Toast.LENGTH_SHORT).show();
-                                        progressDialog.dismiss();
-                                    }
-                                });
+                                                Toast.makeText(InProfile.this, "profile updated.", Toast.LENGTH_SHORT).show();
+                                                progressDialog.dismiss();
+                                            };
+                                        }
+                                    });
+                                }
                             }
-                        }
-                    });
+                        });
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 } else if(selectedImage == null) {
                     DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users");
-                    userRef.child(uid).child("name").setValue(name.getText().toString());
-                    userRef.child(uid).child("status").setValue(status.getText().toString());
-                    progressDialog.dismiss();
-                    Toast.makeText(InProfile.this, "profile updated.", Toast.LENGTH_SHORT).show();
+                    if (name.getText().toString().length() > 18) {
+                        Toast.makeText(InProfile.this, "max 18 letter's name allowed", Toast.LENGTH_SHORT).show();
+                        progressDialog.dismiss();
+                    } else if (status.getText().toString().length() > 50) {
+                        Toast.makeText(InProfile.this, "max 50 letter's status allowed", Toast.LENGTH_SHORT).show();
+                        progressDialog.dismiss();
+                    } else {
+                        userRef.child(uid).child("name").setValue(name.getText().toString());
+                        userRef.child(uid).child("status").setValue(status.getText().toString());
+
+                        Toast.makeText(InProfile.this, "profile updated.", Toast.LENGTH_SHORT).show();
+                        progressDialog.dismiss();
+                    };
                 } else {
                     progressDialog.dismiss();
                     Toast.makeText(InProfile.this, "profile already updated.", Toast.LENGTH_SHORT).show();

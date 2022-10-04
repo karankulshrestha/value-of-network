@@ -17,6 +17,7 @@ import com.google.android.exoplayer2.MediaItem;
 import com.google.android.exoplayer2.ui.StyledPlayerView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.karankulx.von.FullScreenImage;
+import com.karankulx.von.GridImageViewer;
 import com.karankulx.von.Models.Message;
 import com.karankulx.von.R;
 import com.karankulx.von.databinding.ItemReceiveBinding;
@@ -95,8 +96,8 @@ public class MessagesAdapter extends RecyclerView.Adapter {
                 viewHolder.binding.image.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Intent fp = new Intent(context, FullScreenImage.class);
-                        fp.putExtra("imageUrl", message.getImageUrl());
+                        Intent fp = new Intent(context, GridImageViewer.class);
+                        fp.putExtra("productImage", message.getImageUrl());
                         context.startActivity(fp);
                     }
                 });
@@ -139,8 +140,8 @@ public class MessagesAdapter extends RecyclerView.Adapter {
                 viewHolder.binding.image.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Intent fp = new Intent(context, FullScreenImage.class);
-                        fp.putExtra("imageUrl", message.getImageUrl());
+                        Intent fp = new Intent(context, GridImageViewer.class);
+                        fp.putExtra("productImage", message.getImageUrl());
                         context.startActivity(fp);
                     }
                 });

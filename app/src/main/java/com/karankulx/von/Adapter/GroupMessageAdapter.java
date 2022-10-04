@@ -22,6 +22,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.karankulx.von.FullScreenImage;
+import com.karankulx.von.GridImageViewer;
 import com.karankulx.von.Models.Message;
 import com.karankulx.von.Models.Users;
 import com.karankulx.von.Models.groupMessage;
@@ -118,8 +119,8 @@ public class GroupMessageAdapter extends RecyclerView.Adapter {
                 viewHolder.binding.image.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Intent fp = new Intent(context, FullScreenImage.class);
-                        fp.putExtra("imageUrl", message.getImageUrl());
+                        Intent fp = new Intent(context, GridImageViewer.class);
+                        fp.putExtra("productImage", message.getImageUrl());
                         context.startActivity(fp);
                     }
                 });
@@ -174,8 +175,8 @@ public class GroupMessageAdapter extends RecyclerView.Adapter {
                 viewHolder.binding.image.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Intent fp = new Intent(context, FullScreenImage.class);
-                        fp.putExtra("imageUrl", message.getImageUrl());
+                        Intent fp = new Intent(context, GridImageViewer.class);
+                        fp.putExtra("productImage", message.getImageUrl());
                         context.startActivity(fp);
                     }
                 });

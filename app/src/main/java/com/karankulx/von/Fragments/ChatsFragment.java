@@ -88,8 +88,10 @@ public class ChatsFragment extends Fragment  {
                         if (snapshot1.exists()) {
                             if (firebaseAuth.getUid().equals(snapshot1.getKey().substring(0, 28))) {
                                 Long tStamp = snapshot1.child("lastMsgTime").getValue(Long.class);
-                                Date date = new Date(tStamp);
-                                mainUsers.put(date, snapshot1.getKey().substring(28, 56));
+                                if (tStamp != null) {
+                                    Date date = new Date(tStamp);
+                                    mainUsers.put(date, snapshot1.getKey().substring(28, 56));
+                                };
                             };
                         };
                     };

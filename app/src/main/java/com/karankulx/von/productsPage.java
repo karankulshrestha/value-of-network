@@ -10,6 +10,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.PopupMenu;
 import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -50,6 +51,7 @@ import com.jaiselrahman.filepicker.model.MediaFile;
 import com.karankulx.von.Adapter.GridAdapter;
 import com.karankulx.von.Models.Message;
 import com.karankulx.von.Models.Product;
+import com.karankulx.von.Models.Users;
 import com.karankulx.von.databinding.ActivityProductsPageBinding;
 import com.karankulx.von.utils.RecyclerItemClickListener;
 
@@ -72,11 +74,12 @@ public class productsPage extends AppCompatActivity {
     FirebaseStorage firebaseStorage;
     RecyclerView recyclerView;
     RecyclerView.LayoutManager layoutManager;
-    public String userId;
+    public String userId, name;
     boolean isMultiSelect = false;
     ArrayList<Product> products;
     ArrayList<Product> multiselect_list;
     public GridAdapter gridAdapter;
+    Toolbar mActionBarToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +99,23 @@ public class productsPage extends AppCompatActivity {
         firebaseStorage = FirebaseStorage.getInstance();
 
 
+        database.getReference().child("users").child(userId).addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    Users user = snapshot.getValue(Users.class);
+                    getSupportActionBar().setTitle(user.getName() + "'s" + " sheet");
+                };
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
+
+
         recyclerView = findViewById(R.id.productRecyclerview);
         layoutManager = new GridLayoutManager(this, 2);
         recyclerView.setLayoutManager(layoutManager);
@@ -109,8 +129,10 @@ public class productsPage extends AppCompatActivity {
                 if (snapshot.exists()) {
                     products.clear();
                     for (DataSnapshot snapshot1 : snapshot.getChildren()) {
-                        Product p = snapshot1.getValue(Product.class);
-                        products.add(p);
+                        if (snapshot1.exists()) {
+                            Product p = snapshot1.getValue(Product.class);
+                            products.add(p);
+                        };
                     };
                     Collections.reverse(products);
                     gridAdapter = new GridAdapter(productsPage.this, products, multiselect_list);
@@ -129,10 +151,13 @@ public class productsPage extends AppCompatActivity {
         binding.productRecyclerview.addOnItemTouchListener(new RecyclerItemClickListener(this, recyclerView, new RecyclerItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
+                Product product = products.get(position);
                 if (isMultiSelect) {
                     multi_select(position);
                 } else {
-                    Toast.makeText(getApplicationContext(), "Details Page", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(productsPage.this, GridImageViewer.class);
+                    intent.putExtra("productImage", product.getPhotourl());
+                    startActivity(intent);
                 };
             }
 

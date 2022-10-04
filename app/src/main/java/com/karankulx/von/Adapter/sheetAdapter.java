@@ -50,6 +50,7 @@ public class sheetAdapter extends RecyclerView.Adapter<sheetAdapter.sheetViewHol
             public void onClick(View view) {
                 Intent intent = new Intent(context, productsPage.class);
                 intent.putExtra("userId", user.getUid());
+                intent.putExtra("name", user.getName());
                 context.startActivity(intent);
             }
         });

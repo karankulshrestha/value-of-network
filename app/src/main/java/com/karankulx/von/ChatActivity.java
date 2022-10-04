@@ -229,6 +229,15 @@ public class ChatActivity extends AppCompatActivity{
             }
         });
 
+        binding.toolbar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(ChatActivity.this, ProfileDetail.class);
+                intent.putExtra("uid", receiverUid);
+                startActivity(intent);
+            }
+        });
+
 
         View v = findViewById(R.id.popupIcons);
         v.animate().translationY(v.getHeight());
@@ -394,6 +403,17 @@ public class ChatActivity extends AppCompatActivity{
                                                     binding.messageText.setText("");
                                                     Date date = new Date();
                                                     Message message = new Message(messageBox, senderUid, date.getTime());
+                                                    message.setMessage("photo");
+                                                    HashMap<String, Object> lastMsgObj = new HashMap<>();
+                                                    lastMsgObj.put("lastMsg", message.getMessage());
+                                                    lastMsgObj.put("lastMsgTime", date.getTime());
+
+                                                    database.getReference().child("chats").child(senderRoom)
+                                                            .updateChildren(lastMsgObj);
+                                                    database.getReference().child("chats").child(receiverRoom)
+                                                            .updateChildren(lastMsgObj);
+
+
                                                     message.setImageUrl(filePath);
                                                     message.setMessage("§£€®¾");
                                                     database.getReference().child("chats")
@@ -581,6 +601,15 @@ public class ChatActivity extends AppCompatActivity{
                                                     binding.messageText.setText("");
                                                     Date date = new Date();
                                                     Message message = new Message(messageBox, senderUid, date.getTime());
+                                                    message.setMessage("video");
+                                                    HashMap<String, Object> lastMsgObj = new HashMap<>();
+                                                    lastMsgObj.put("lastMsg", message.getMessage());
+                                                    lastMsgObj.put("lastMsgTime", date.getTime());
+
+                                                    database.getReference().child("chats").child(senderRoom)
+                                                            .updateChildren(lastMsgObj);
+                                                    database.getReference().child("chats").child(receiverRoom)
+                                                            .updateChildren(lastMsgObj);
                                                     message.setMessage("©°¶•ë™æ");
                                                     message.setVideoUrl(videoPath);
                                                     Log.d("happu", videoPath);

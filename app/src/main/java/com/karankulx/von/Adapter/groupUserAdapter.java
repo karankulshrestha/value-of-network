@@ -1,6 +1,8 @@
 package com.karankulx.von.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +17,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.karankulx.von.ChatActivity;
 import com.karankulx.von.GroupDetails;
 import com.karankulx.von.Models.Users;
 import com.karankulx.von.R;
@@ -65,6 +68,20 @@ public class groupUserAdapter extends RecyclerView.Adapter<groupUserAdapter.grou
 
         Glide.with(context).load(user.getProfilePic())
                 .diskCacheStrategy(DiskCacheStrategy.ALL).into(holder.binding.profileImage);
+
+        holder.binding.mainBody.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, ChatActivity.class);
+                intent.putExtra("username", holder.binding.chaterName.getText().toString());
+                intent.putExtra("profileUri", user.getProfilePic());
+                intent.putExtra("uid", user.getUid());
+                intent.putExtra("token", user.getToken());
+                context.startActivity(intent);
+            }
+        });
+
+
     }
 
     @Override

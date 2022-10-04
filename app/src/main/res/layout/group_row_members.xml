@@ -8,6 +8,7 @@
     android:id="@+id/mainBody"
     android:layout_margin="10dp"
     android:backgroundTint="#676666"
+    android:background="?selectableItemBackground"
     android:foregroundTint="#6C6A6A">
 
     <de.hdodenhof.circleimageview.CircleImageView

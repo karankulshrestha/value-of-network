@@ -42,7 +42,7 @@ public class sheetAdapter extends RecyclerView.Adapter<sheetAdapter.sheetViewHol
     public void onBindViewHolder(@NonNull sheetAdapter.sheetViewHolder holder, int position) {
         Users user = users.get(position);
         holder.binding.chaterName.setText(user.getName());
-        holder.binding.phoneNumber.setText(" ~ " + user.getPhoneNumber());
+        holder.binding.timeStamp.setText(" ~ " + user.getPhoneNumber());
         Glide.with(context).load(user.getProfilePic())
                 .diskCacheStrategy(DiskCacheStrategy.ALL).into(holder.binding.profileImage);
         holder.binding.mainBody.setOnClickListener(new View.OnClickListener() {

@@ -49,6 +49,12 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.arthenica.mobileffmpeg.Config;
 import com.arthenica.mobileffmpeg.ExecuteCallback;
 import com.arthenica.mobileffmpeg.FFmpeg;
@@ -79,6 +85,8 @@ import com.karankulx.von.Models.groupMessage;
 import com.karankulx.von.databinding.ActivityChatBinding;
 
 
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -87,6 +95,8 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 
@@ -210,6 +220,26 @@ public class groupChatActivity extends AppCompatActivity{
                     };
                     GroupLastMessage groupLastMessage = new GroupLastMessage(messageBox, calender.getTimeInMillis());
                     database.getReference().child("groupChats").child(groupId).child(groupId + "-123").setValue(groupLastMessage);
+
+                    for (int i = 0; i < usersList.size(); i++) {
+                        database.getReference().child("users").child(usersList.get(i).getUid()).addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                if (snapshot.exists()) {
+                                    Users users = snapshot.getValue(Users.class);
+                                    Log.d("berries", users.getToken());
+                                    if (!users.getUid().equals(FirebaseAuth.getInstance().getUid())) {
+                                        sendNotification(name, messageBox, users.getToken());
+                                    };
+                                };
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+                    };
                 };
             }
         });
@@ -285,6 +315,51 @@ public class groupChatActivity extends AppCompatActivity{
             }
         });
     }
+
+    public void sendNotification(String name, String message, String token) {
+            try {
+                RequestQueue queue = Volley.newRequestQueue(this);
+                String url = "https://fcm.googleapis.com/fcm/send";
+                JSONObject data = new JSONObject();
+
+                data.put("title", name);
+                data.put("body", message);
+
+                JSONObject notificationData = new JSONObject();
+                notificationData.put("notification", data);
+                notificationData.put("to", token);
+
+                JsonObjectRequest request = new JsonObjectRequest(url, notificationData, new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Toast.makeText(groupChatActivity.this, "success", Toast.LENGTH_SHORT).show();
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+//                        Toast.makeText(groupChatActivity.this, error.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                        Log.d("karan", error.getLocalizedMessage());
+                    }
+                }) {
+                    @Override
+                    public Map<String, String> getHeaders() throws AuthFailureError {
+                        HashMap<String, String> map = new HashMap<>();
+                        String key = "Key=AAAAlHX7VUs:APA91bE0rgqpx1vfiOfzGirpdkBONAs0JnmYGepEE0BckyqxC6ftGu26t3oBRk1GzZ_Y1PDigy1Ia0LlGigMSOyL8MaW93aUGkrnRgi1oA24K-LGbvzoZZia368fL6MwmMqbL4GXzd6u";
+                        map.put("Authorization", key);
+                        map.put("Content-Type", "application/json");
+                        return map;
+                    }
+                };
+
+                queue.add(request);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+    };
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

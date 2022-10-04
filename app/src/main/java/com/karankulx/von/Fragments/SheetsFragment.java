@@ -61,19 +61,7 @@ public class SheetsFragment extends Fragment {
         requiredContacts = new ArrayList<>();
         cloudContacts = new ArrayList<>();
 
-        if (ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.READ_CONTACTS)
-                == PackageManager.PERMISSION_GRANTED) {
-            filler();
-
-            for (Users contact : cloudContacts) {
-                Log.d("hvy", "onCreaterrView  Phone Number: name = " + contact.getName()
-                        + " No = " + contact.getPhoneNumber());
-            }
-
-        } else {
-            requestPermission();
-        }
-
+        filler();
 
         return binding.getRoot();
     };
@@ -118,35 +106,6 @@ public class SheetsFragment extends Fragment {
         });
     }
 
-    private void requestPermission() {
-        if (ActivityCompat.shouldShowRequestPermissionRationale((Activity) context, android.Manifest.permission.READ_CONTACTS)) {
-            Toast.makeText(context, "You have disabled a contacts permission", Toast.LENGTH_LONG).show();
-        } else {
-            ActivityCompat.requestPermissions((Activity) context, new String[]{android.Manifest.permission.READ_CONTACTS},
-                    REQUEST_READ_CONTACTS);
-        }
-        if (ActivityCompat.shouldShowRequestPermissionRationale((Activity) context, android.Manifest.permission.READ_CONTACTS)) {
-        } else {
-            ActivityCompat.requestPermissions((Activity) context, new String[]{android.Manifest.permission.READ_CONTACTS},
-                    REQUEST_READ_CONTACTS);
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {
-            case REQUEST_READ_CONTACTS: {
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    filler();
-                } else {
-                    Toast.makeText(context, "You have disabled a contacts permission", Toast.LENGTH_LONG).show();
-                }
-                return;
-            }
-        }
-    }
 
     private static final String[] PROJECTION = new String[]{
             ContactsContract.CommonDataKinds.Phone.CONTACT_ID,

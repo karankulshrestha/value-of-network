@@ -20,61 +20,79 @@
         android:theme="@style/Theme.Von">
         <activity
             android:name=".ProfileDetail"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".GridImageViewer"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".productsPage"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".statusActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".GroupDetails"
+            android:screenOrientation="portrait"
             android:exported="false"
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".GroupBuildingActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".groupChatActivity"
+            android:screenOrientation="portrait"
             android:exported="false"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".FullScreenImage"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".ChatActivity"
+            android:screenOrientation="portrait"
             android:exported="false"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".ContactSync"
+            android:screenOrientation="portrait"
             android:exported="false"
             android:windowSoftInputMode="adjustPan" />
         <activity
             android:name=".InProfile"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".PasswordReset"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".PhoneVerification"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".HomeActivity"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".ProfilePage"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".SingUp"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".SignIn"
+            android:screenOrientation="portrait"
             android:exported="false" />
         <activity
             android:name=".SplashScreen"
+            android:screenOrientation="portrait"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -84,6 +102,7 @@
         </activity>
         <activity
             android:name=".MainActivity"
+            android:screenOrientation="portrait"
             android:exported="true" />
         <!--
  Set custom default icon. This is used when no icon is set for incoming notification messages.

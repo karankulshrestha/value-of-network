@@ -41,6 +41,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -63,6 +64,9 @@ import java.util.HashSet;
 
 public class HomeActivity extends AppCompatActivity {
 
+    private Context mContext=HomeActivity.this;
+    private static final int REQUEST = 112;
+
     ActivityHomeBinding binding;
     public FirebaseAuth firebaseAuth;
     public topStatusAdapter statusAdapter;
@@ -71,6 +75,7 @@ public class HomeActivity extends AppCompatActivity {
     public FirebaseDatabase database;
     public StorageReference storageReference;
     Users user;
+    public static final int REQUEST_READ_CONTACTS = 79;
 
 
     @Override
@@ -89,8 +94,30 @@ public class HomeActivity extends AppCompatActivity {
 
         database = FirebaseDatabase.getInstance();
 
+        if (Build.VERSION.SDK_INT >= 23) {
+            String[] PERMISSIONS = {android.Manifest.permission.READ_CONTACTS};
+            if (!hasPermissions(mContext, PERMISSIONS)) {
+                ActivityCompat.requestPermissions((Activity) mContext, PERMISSIONS, REQUEST );
+            } else {
+
+            }
+        } else {
+
+        }
+
 
         userStatuses = new ArrayList<>();
+
+        FirebaseMessaging.getInstance().getToken().addOnSuccessListener(new OnSuccessListener<String>() {
+            @Override
+            public void onSuccess(String token) {
+                HashMap<String, Object> map = new HashMap<>();
+                map.put("token", token);
+                database.getReference().child("users")
+                        .child(FirebaseAuth.getInstance().getUid())
+                        .updateChildren(map);
+            }
+        });
 
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
@@ -103,13 +130,15 @@ public class HomeActivity extends AppCompatActivity {
                 .addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        String name = snapshot.child("name").getValue(String.class);
-                        String profilePic = snapshot.child("profilePic").getValue(String.class);
+                        if (snapshot.exists()) {
+                            String name = snapshot.child("name").getValue(String.class);
+                            String profilePic = snapshot.child("profilePic").getValue(String.class);
 
-                        database.getReference().child("stories").child(FirebaseAuth.getInstance().getUid())
-                                .child("name").setValue(name);
-                        database.getReference().child("stories").child(FirebaseAuth.getInstance().getUid())
-                                .child("profileImage").setValue(profilePic);
+                            database.getReference().child("stories").child(FirebaseAuth.getInstance().getUid())
+                                    .child("name").setValue(name);
+                            database.getReference().child("stories").child(FirebaseAuth.getInstance().getUid())
+                                    .child("profileImage").setValue(profilePic);
+                        };
                     }
 
                     @Override
@@ -129,7 +158,6 @@ public class HomeActivity extends AppCompatActivity {
                             String uid = snapshot1.getKey();
                             us.setName(snapshot1.child("name").getValue(String.class));
                             us.setProfileImage(snapshot1.child("profileImage").getValue(String.class));
-                            us.setLastUpdated(snapshot1.child("lastUpdated").getValue(Long.class));
 
                             ArrayList<Status> statuses = new ArrayList<>();
 
@@ -163,6 +191,32 @@ public class HomeActivity extends AppCompatActivity {
 
 
     }
+
+    private static boolean hasPermissions(Context context, String... permissions) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && context != null && permissions != null) {
+            for (String permission : permissions) {
+                if (ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case REQUEST: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                } else {
+                    Toast.makeText(mContext, "The app was not allowed to read your contact", Toast.LENGTH_LONG).show();
+                }
+            }
+        }
+    }
+
+
 
 
 
@@ -248,33 +302,35 @@ public class HomeActivity extends AppCompatActivity {
                                         database.getReference().child("users").child(FirebaseAuth.getInstance().getUid()).addValueEventListener(new ValueEventListener() {
                                             @Override
                                             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                user = snapshot.getValue(Users.class);
-                                                userStatus us = new userStatus();
-                                                us.setName(user.getName());
-                                                us.setProfileImage(user.getProfilePic());
-                                                us.setLastUpdated(d.getTime());
+                                                if (snapshot.exists()) {
+                                                    user = snapshot.getValue(Users.class);
+                                                    userStatus us = new userStatus();
+                                                    us.setName(user.getName());
+                                                    us.setProfileImage(user.getProfilePic());
+                                                    us.setLastUpdated(d.getTime());
 
-                                                Log.d("jaana", String.valueOf(uri));
+                                                    Log.d("jaana", String.valueOf(uri));
 
-                                                HashMap<String, Object> obj = new HashMap<>();
-                                                obj.put("name", us.getName());
-                                                obj.put("profileImage", us.getProfileImage());
-                                                obj.put("lastUpdated", us.getLastUpdated());
+                                                    HashMap<String, Object> obj = new HashMap<>();
+                                                    obj.put("name", us.getName());
+                                                    obj.put("profileImage", us.getProfileImage());
+                                                    obj.put("lastUpdated", us.getLastUpdated());
 
-                                                String imageUrl = uri.toString();
-                                                Status status = new Status(imageUrl, us.getLastUpdated(), FirebaseAuth.getInstance().getUid());
+                                                    String imageUrl = uri.toString();
+                                                    Status status = new Status(imageUrl, us.getLastUpdated(), FirebaseAuth.getInstance().getUid());
 
-                                                db.getReference().child("stories")
-                                                        .child(FirebaseAuth.getInstance().getUid())
-                                                        .updateChildren(obj);
+                                                    db.getReference().child("stories")
+                                                            .child(FirebaseAuth.getInstance().getUid())
+                                                            .updateChildren(obj);
 
-                                                db.getReference().child("stories")
-                                                        .child(FirebaseAuth.getInstance().getUid())
-                                                        .child("statuses")
-                                                        .push()
-                                                        .setValue(status);
+                                                    db.getReference().child("stories")
+                                                            .child(FirebaseAuth.getInstance().getUid())
+                                                            .child("statuses")
+                                                            .push()
+                                                            .setValue(status);
 
-                                                progressDialog.dismiss();
+                                                    progressDialog.dismiss();
+                                                };
                                             }
 
                                             @Override

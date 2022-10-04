@@ -53,6 +53,12 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 
+import com.android.volley.AuthFailureError;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.arthenica.mobileffmpeg.Config;
 import com.arthenica.mobileffmpeg.ExecuteCallback;
 import com.arthenica.mobileffmpeg.FFmpeg;
@@ -76,8 +82,12 @@ import com.jaiselrahman.filepicker.model.MediaFile;
 import com.karankulx.von.Adapter.MessagesAdapter;
 import com.karankulx.von.Fragments.ChatsFragment;
 import com.karankulx.von.Models.Message;
+import com.karankulx.von.Models.Users;
 import com.karankulx.von.databinding.ActivityChatBinding;
 
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -86,6 +96,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 
@@ -104,6 +115,7 @@ public class ChatActivity extends AppCompatActivity{
 
     String senderRoom, receiverRoom;
     String senderUid, receiverUid;
+    String token;
 
     FirebaseDatabase database;
     FirebaseStorage storage;
@@ -132,6 +144,8 @@ public class ChatActivity extends AppCompatActivity{
         receiverRoom = receiverUid + senderUid;
         database = FirebaseDatabase.getInstance();
         storage = FirebaseStorage.getInstance();
+
+        token = getIntent().getStringExtra("token");
 
 
         database.getReference().child("chats")
@@ -194,6 +208,18 @@ public class ChatActivity extends AppCompatActivity{
                                                 @Override
                                                 public void onSuccess(Void unused) {
                                                     database.getReference().child("recentChats").child(receiverUid).child(senderUid);
+                                                    database.getReference().child("users").child(FirebaseAuth.getInstance().getUid()).addValueEventListener(new ValueEventListener() {
+                                                        @Override
+                                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                            Users users = snapshot.getValue(Users.class);
+                                                            sendNotification(users.getName(), messageBox, token);
+                                                        }
+
+                                                        @Override
+                                                        public void onCancelled(@NonNull DatabaseError error) {
+
+                                                        }
+                                                    });
                                                 }
                                             });
 
@@ -223,7 +249,7 @@ public class ChatActivity extends AppCompatActivity{
         profile = findViewById(R.id.profile_image);
         title.setText(name);
         Glide.with(this).load(profileUri).diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .into(profile);
+                .into(profile);
         toolbar.setTitle(name);
         setSupportActionBar(toolbar);
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
@@ -278,7 +304,7 @@ public class ChatActivity extends AppCompatActivity{
 
     @Override
     public void onBackPressed() {
-       super.onBackPressed();
+        super.onBackPressed();
     }
 
 
@@ -430,6 +456,50 @@ public class ChatActivity extends AppCompatActivity{
             });
 
 
+    void sendNotification(String name, String message, String token) {
+        try {
+            RequestQueue queue = Volley.newRequestQueue(this);
+            String url = "https://fcm.googleapis.com/fcm/send";
+            JSONObject data = new JSONObject();
+
+            data.put("title", name);
+            data.put("body", message);
+
+            JSONObject notificationData = new JSONObject();
+            notificationData.put("notification", data);
+            notificationData.put("to", token);
+
+            JsonObjectRequest request = new JsonObjectRequest(url, notificationData, new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    Toast.makeText(ChatActivity.this, "success", Toast.LENGTH_SHORT).show();
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    Toast.makeText(ChatActivity.this, error.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                }
+            }) {
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    HashMap<String, String> map = new HashMap<>();
+                    String key = "Key=AAAAlHX7VUs:APA91bE0rgqpx1vfiOfzGirpdkBONAs0JnmYGepEE0BckyqxC6ftGu26t3oBRk1GzZ_Y1PDigy1Ia0LlGigMSOyL8MaW93aUGkrnRgi1oA24K-LGbvzoZZia368fL6MwmMqbL4GXzd6u";
+                    map.put("Authorization", key);
+                    map.put("Content-Type", "application/json");
+                    return map;
+                }
+            };
+
+            queue.add(request);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    };
+
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
@@ -515,24 +585,24 @@ public class ChatActivity extends AppCompatActivity{
                                                     message.setVideoUrl(videoPath);
                                                     Log.d("happu", videoPath);
                                                     database.getReference().child("chats")
-                                                                    .child(senderRoom)
-                                                                    .child("messages")
-                                                                    .push()
-                                                                    .setValue(message)
-                                                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                            .child(senderRoom)
+                                                            .child("messages")
+                                                            .push()
+                                                            .setValue(message)
+                                                            .addOnSuccessListener(new OnSuccessListener<Void>() {
+                                                                @Override
+                                                                public void onSuccess(Void unused) {
+                                                                    database.getReference().child("chats")
+                                                                            .child(receiverRoom)
+                                                                            .child("messages")
+                                                                            .push()
+                                                                            .setValue(message).addOnSuccessListener(new OnSuccessListener<Void>() {
                                                                                 @Override
                                                                                 public void onSuccess(Void unused) {
-                                                                                        database.getReference().child("chats")
-                                                                                        .child(receiverRoom)
-                                                                                        .child("messages")
-                                                                                        .push()
-                                                                                        .setValue(message).addOnSuccessListener(new OnSuccessListener<Void>() {
-                                                                                            @Override
-                                                                                            public void onSuccess(Void unused) {
-                                                                                        }
-                                                                                });
                                                                                 }
                                                                             });
+                                                                }
+                                                            });
                                                     progressDialog.dismiss();
                                                 }
                                             });
@@ -679,6 +749,3 @@ public class ChatActivity extends AppCompatActivity{
     }
 
 }
-
-
-

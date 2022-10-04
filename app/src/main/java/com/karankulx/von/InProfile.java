@@ -73,14 +73,16 @@ public class InProfile extends AppCompatActivity {
         reference.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                Users users = snapshot.getValue(Users.class);
-                imageUrl = users.getProfilePic();
-                name.setText(users.getName());
-                phoneNumber.setText(users.getPhoneNumber());
-                status.setText(users.getStatus());
-                Glide.with(InProfile.this)
-                        .load(imageUrl)
-                        .into(profile);
+                if (snapshot.exists()) {
+                    Users users = snapshot.getValue(Users.class);
+                    imageUrl = users.getProfilePic();
+                    name.setText(users.getName());
+                    phoneNumber.setText(users.getPhoneNumber());
+                    status.setText(users.getStatus());
+                    Glide.with(InProfile.this)
+                            .load(imageUrl)
+                            .into(profile);
+                };
             }
 
             @Override

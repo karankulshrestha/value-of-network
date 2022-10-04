@@ -66,9 +66,11 @@ public class GroupFragment extends Fragment {
                                     .addValueEventListener(new ValueEventListener() {
                                         @Override
                                         public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                            Users users2 = snapshot.getValue(Users.class);
-                                            users1.setName(users2.getName());
-                                            users1.setProfilePic(users2.getProfilePic());
+                                            if (snapshot.exists()) {
+                                                Users users2 = snapshot.getValue(Users.class);
+                                                users1.setName(users2.getName());
+                                                users1.setProfilePic(users2.getProfilePic());
+                                            };
                                         }
 
                                         @Override

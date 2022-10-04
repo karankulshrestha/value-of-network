@@ -7,7 +7,7 @@ import androidx.annotation.NonNull;
 
 public class Users implements Parcelable {
 
-    String profilePic, name, email, password, rePassword, phoneNumber, status, uid;
+    String profilePic, name, email, password, rePassword, phoneNumber, status, uid, token;
     Boolean isSelected;
 
     public Users() {};
@@ -54,6 +54,14 @@ public class Users implements Parcelable {
         phoneNumber = in.readString();
         status = in.readString();
         uid = in.readString();
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
     }
 
     public static final Creator<Users> CREATOR = new Creator<Users>() {

@@ -70,31 +70,33 @@ public class SignIn extends AppCompatActivity {
                 if(!email.isEmpty()) {
                     if (!binding.signInPassword.getText().toString().isEmpty()) {
                         DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users");
-                        userRef.orderByChild("email").equalTo(email).addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                mAuth.signInWithEmailAndPassword(binding.signInEmailField.getText().toString(), binding.signInPassword.getText().toString())
-                                        .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                                if(task.isSuccessful()) {
-                                                    progressDialog.dismiss();
-                                                    Intent intent = new Intent(SignIn.this, HomeActivity.class);
-                                                    startActivity(intent);
-                                                    finish();
-                                                } else {
-                                                    progressDialog.dismiss();
-                                                    Toast.makeText(SignIn.this, task.getException().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                        if (userRef != null) {
+                            userRef.orderByChild("email").equalTo(email).addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    mAuth.signInWithEmailAndPassword(binding.signInEmailField.getText().toString(), binding.signInPassword.getText().toString())
+                                            .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<AuthResult> task) {
+                                                    if(task.isSuccessful()) {
+                                                        progressDialog.dismiss();
+                                                        Intent intent = new Intent(SignIn.this, HomeActivity.class);
+                                                        startActivity(intent);
+                                                        finish();
+                                                    } else {
+                                                        progressDialog.dismiss();
+                                                        Toast.makeText(SignIn.this, task.getException().getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                                                    }
                                                 }
-                                            }
-                                        });
-                            }
+                                            });
+                                }
 
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
-                                Toast.makeText(SignIn.this, error.toString(), Toast.LENGTH_SHORT).show();
-                            }
-                        });
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+                                    Toast.makeText(SignIn.this, error.toString(), Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        };
 
                     } else {
                         progressDialog.dismiss();

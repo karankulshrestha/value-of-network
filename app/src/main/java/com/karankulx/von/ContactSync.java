@@ -78,18 +78,7 @@ public class ContactSync extends AppCompatActivity {
         cloudContacts = new ArrayList<>();
         requiredContacts = new ArrayList<>();
 
-        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.READ_CONTACTS)
-                == PackageManager.PERMISSION_GRANTED) {
-            filler();
-
-            for (Users contact : cloudContacts) {
-                Log.d("hvy", "onCreaterrView  Phone Number: name = " + contact.getName()
-                        + " No = " + contact.getPhoneNumber());
-            }
-
-        } else {
-            requestPermission();
-        }
+        filler();
     }
 
 
@@ -100,32 +89,33 @@ public class ContactSync extends AppCompatActivity {
         database.getReference().child("users").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                for (DataSnapshot data : snapshot.getChildren()) {
-                    Users user = data.getValue(Users.class);
-                    mAuth = FirebaseAuth.getInstance();
-                    FirebaseUser currentUser = mAuth.getCurrentUser();
-                    if (!currentUser.getUid().equals(data.getKey())) {
-                        cloudContacts.add(user);
-                        Log.d("lolly", data.getKey());
-                    }
-                }
-
-                for (Contact lCon : lContacts) {
-                    for (Users cCon : cloudContacts) {
-                        if (lCon.getPhoneNumber().contains(cCon.getPhoneNumber())) {
-                            cCon.setName(lCon.getName());
-                            requiredContacts.add(cCon);
+                if (snapshot.exists()) {
+                    for (DataSnapshot data : snapshot.getChildren()) {
+                        Users user = data.getValue(Users.class);
+                        mAuth = FirebaseAuth.getInstance();
+                        FirebaseUser currentUser = mAuth.getCurrentUser();
+                        if (!currentUser.getUid().equals(data.getKey())) {
+                            cloudContacts.add(user);
+                            Log.d("lolly", data.getKey());
                         }
                     }
-                }
+
+                    for (Contact lCon : lContacts) {
+                        for (Users cCon : cloudContacts) {
+                            if (lCon.getPhoneNumber().contains(cCon.getPhoneNumber())) {
+                                cCon.setName(lCon.getName());
+                                requiredContacts.add(cCon);
+                            }
+                        }
+                    }
 
 
-                adapter = new ContactAdapter(requiredContacts, multiselect_list, ContactSync.this);
-                LinearLayoutManager manager = new LinearLayoutManager(ContactSync.this);
-                localContactDetails.setHasFixedSize(true);
-                localContactDetails.setLayoutManager(manager);
-                localContactDetails.setAdapter(adapter);
-
+                    adapter = new ContactAdapter(requiredContacts, multiselect_list, ContactSync.this);
+                    LinearLayoutManager manager = new LinearLayoutManager(ContactSync.this);
+                    localContactDetails.setHasFixedSize(true);
+                    localContactDetails.setLayoutManager(manager);
+                    localContactDetails.setAdapter(adapter);
+                };
             }
 
             @Override
@@ -297,37 +287,6 @@ public class ContactSync extends AppCompatActivity {
             adapter.filterList(filteredlist);
         }
     }
-
-    private void requestPermission() {
-        if (ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.READ_CONTACTS)) {
-            Toast.makeText(this, "You have disabled a contacts permission", Toast.LENGTH_LONG).show();
-        } else {
-            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.READ_CONTACTS},
-                    REQUEST_READ_CONTACTS);
-        }
-        if (ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.READ_CONTACTS)) {
-        } else {
-            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.READ_CONTACTS},
-                    REQUEST_READ_CONTACTS);
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {
-            case REQUEST_READ_CONTACTS: {
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    filler();
-                } else {
-                    Toast.makeText(this, "You have disabled a contacts permission", Toast.LENGTH_LONG).show();
-                }
-                return;
-            }
-        }
-    }
-
 
 
     private static final String[] PROJECTION = new String[]{

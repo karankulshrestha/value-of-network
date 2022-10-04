@@ -108,7 +108,7 @@ public class ProfilePage extends AppCompatActivity {
                                 userRef.orderByChild("phoneNumber").equalTo(phoneNumber).addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
                                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                        if (snapshot.getValue() != null){
+                                        if (snapshot.exists()){
                                             progressDialog.dismiss();
                                             Toast.makeText(ProfilePage.this, "user with this number already exist", Toast.LENGTH_SHORT).show();
 

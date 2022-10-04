@@ -83,14 +83,16 @@ public class ChatsFragment extends Fragment  {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 users.clear();
                 mainUsers.clear();
-                for (DataSnapshot snapshot1 : snapshot.getChildren()) {
-                    if (firebaseAuth.getUid().equals(snapshot1.getKey().substring(0, 28))) {
-                        Long tStamp = snapshot1.child("lastMsgTime").getValue(Long.class);
-                        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm a");
-                        Date date = new Date(tStamp);
-                        mainUsers.put(date, snapshot1.getKey().substring(28, 56));
+                if (snapshot.exists()) {
+                    for (DataSnapshot snapshot1 : snapshot.getChildren()) {
+                        if (snapshot1.exists()) {
+                            if (firebaseAuth.getUid().equals(snapshot1.getKey().substring(0, 28))) {
+                                Long tStamp = snapshot1.child("lastMsgTime").getValue(Long.class);
+                                Date date = new Date(tStamp);
+                                mainUsers.put(date, snapshot1.getKey().substring(28, 56));
+                            };
+                        };
                     };
-
                 };
 
 

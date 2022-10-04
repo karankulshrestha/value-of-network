@@ -189,12 +189,14 @@ public class productsPage extends AppCompatActivity {
                         database.getReference().child("sheets").child(userId).addValueEventListener(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
-                                    Product p = dataSnapshot.getValue(Product.class);
-                                    if (product.getTimeStamp().equals(p.getTimeStamp())) {
-                                        Log.d("honey", dataSnapshot.getKey());
-                                        database.getReference().child("sheets").child(userId).child(dataSnapshot.getKey()).removeValue();
-                                        mActionMode.setTitle("" + 0);
+                                if (snapshot.exists()) {
+                                    for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                        Product p = dataSnapshot.getValue(Product.class);
+                                        if (product.getTimeStamp().equals(p.getTimeStamp())) {
+                                            Log.d("honey", dataSnapshot.getKey());
+                                            database.getReference().child("sheets").child(userId).child(dataSnapshot.getKey()).removeValue();
+                                            mActionMode.setTitle("" + 0);
+                                        };
                                     };
                                 };
                             }

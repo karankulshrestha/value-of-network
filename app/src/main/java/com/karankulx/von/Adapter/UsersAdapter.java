@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,6 +38,7 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UsersViewHol
 
     Context context;
     ArrayList<String> users;
+    FirebaseDatabase database = FirebaseDatabase.getInstance();
 
     public UsersAdapter(Context context, ArrayList<String> users) {
         this.context = context;
@@ -83,24 +85,27 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UsersViewHol
         FirebaseDatabase.getInstance().getReference().child("users").child(user).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                Users users = snapshot.getValue(Users.class);
-                holder.binding.chaterName.setText(users.getName());
-                holder.binding.phoneNumber.setText(" ~ " + users.getPhoneNumber());
-                Glide.with(context).load(users.getProfilePic())
-                        .diskCacheStrategy(DiskCacheStrategy.ALL).into(holder.binding.profileImage);
+                if (snapshot.exists()) {
+                    Users users = snapshot.getValue(Users.class);
+                    holder.binding.chaterName.setText(users.getName());
+                    holder.binding.phoneNumber.setText(" ~ " + users.getPhoneNumber());
+                    Glide.with(context).load(users.getProfilePic())
+                            .diskCacheStrategy(DiskCacheStrategy.ALL).into(holder.binding.profileImage);
 
-                holder.binding.mainBody.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        holder.binding.lastMessage.setTypeface(null, Typeface.NORMAL);
-                        Intent intent = new Intent(context, ChatActivity.class);
-                        intent.putExtra("username", holder.binding.chaterName.getText().toString());
-                        intent.putExtra("profileUri", users.getProfilePic());
-                        intent.putExtra("uid", users.getUid());
-                        context.startActivity(intent);
-                    }
-                });
+                    holder.binding.mainBody.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
 
+                            holder.binding.lastMessage.setTypeface(null, Typeface.NORMAL);
+                            Intent intent = new Intent(context, ChatActivity.class);
+                            intent.putExtra("username", holder.binding.chaterName.getText().toString());
+                            intent.putExtra("profileUri", users.getProfilePic());
+                            intent.putExtra("uid", users.getUid());
+                            intent.putExtra("token", users.getToken());
+                            context.startActivity(intent);
+                        }
+                    });
+                };
             }
 
             @Override

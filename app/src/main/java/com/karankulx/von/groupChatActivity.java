@@ -155,6 +155,8 @@ public class groupChatActivity extends AppCompatActivity{
 
         groupId = intent.getStringExtra("groupId");
 
+        binding.icPhone.setVisibility(View.GONE);
+
         binding.groupDetails.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

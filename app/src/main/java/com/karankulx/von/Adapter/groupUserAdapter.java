@@ -75,6 +75,7 @@ public class groupUserAdapter extends RecyclerView.Adapter<groupUserAdapter.grou
                 Intent intent = new Intent(context, ChatActivity.class);
                 intent.putExtra("username", holder.binding.chaterName.getText().toString());
                 intent.putExtra("profileUri", user.getProfilePic());
+                intent.putExtra("phoneNumber", user.getPhoneNumber());
                 intent.putExtra("uid", user.getUid());
                 intent.putExtra("token", user.getToken());
                 context.startActivity(intent);

@@ -9,8 +9,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Toast;
 
@@ -34,6 +36,8 @@ import com.google.firebase.storage.UploadTask;
 import com.karankulx.von.Models.Users;
 import com.karankulx.von.databinding.ActivityProfilePageBinding;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 public class ProfilePage extends AppCompatActivity {
@@ -103,7 +107,6 @@ public class ProfilePage extends AppCompatActivity {
                     if (phoneNumber.matches("^\\d{10}$")) {
                         if(!name.isEmpty()) {
                             if(!status.isEmpty()) {
-
                                 DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users");
                                 userRef.orderByChild("phoneNumber").equalTo(phoneNumber).addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override
@@ -114,60 +117,69 @@ public class ProfilePage extends AppCompatActivity {
 
                                         } else {
                                             StorageReference reference = storage.getReference().child("profiles").child(uid);
-                                            reference.putFile(selectedImage).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
-                                                    if (task.isSuccessful()) {
-                                                        Toast.makeText(ProfilePage.this, "Profile added successfully", Toast.LENGTH_SHORT).show();
-                                                        reference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
-                                                            @Override
-                                                            public void onSuccess(Uri uri) {
-                                                                imageUri = uri.toString();
-                                                                PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks = new PhoneAuthProvider
-                                                                        .OnVerificationStateChangedCallbacks() {
-                                                                    @Override
-                                                                    public void onVerificationCompleted(PhoneAuthCredential credential) {
-                                                                        progressDialog.dismiss();
+                                            Bitmap bmp = null;
+                                            try {
+                                                bmp = MediaStore.Images.Media.getBitmap(getContentResolver(), selectedImage);
+                                                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                                                bmp.compress(Bitmap.CompressFormat.JPEG, 25, baos);
+                                                byte[] data = baos.toByteArray();
+                                                reference.putBytes(data).addOnCompleteListener(new OnCompleteListener<UploadTask.TaskSnapshot>() {
+                                                    @Override
+                                                    public void onComplete(@NonNull Task<UploadTask.TaskSnapshot> task) {
+                                                        if (task.isSuccessful()) {
+                                                            Toast.makeText(ProfilePage.this, "Profile added successfully", Toast.LENGTH_SHORT).show();
+                                                            reference.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                                                                @Override
+                                                                public void onSuccess(Uri uri) {
+                                                                    imageUri = uri.toString();
+                                                                    PhoneAuthProvider.OnVerificationStateChangedCallbacks mCallbacks = new PhoneAuthProvider
+                                                                            .OnVerificationStateChangedCallbacks() {
+                                                                        @Override
+                                                                        public void onVerificationCompleted(PhoneAuthCredential credential) {
+                                                                            progressDialog.dismiss();
 
-                                                                    }
+                                                                        }
 
-                                                                    @Override
-                                                                    public void onVerificationFailed(FirebaseException e) {
-                                                                        progressDialog.dismiss();
-                                                                        Toast.makeText(ProfilePage.this, e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-                                                                    }
+                                                                        @Override
+                                                                        public void onVerificationFailed(FirebaseException e) {
+                                                                            progressDialog.dismiss();
+                                                                            Toast.makeText(ProfilePage.this, e.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                                                                        }
 
-                                                                    @Override
-                                                                    public void onCodeSent(String verificationId, PhoneAuthProvider.ForceResendingToken token) {
-                                                                        progressDialog.dismiss();
-                                                                        Intent intent = new Intent(ProfilePage.this, PhoneVerification.class);
-                                                                        intent.putExtra("verificationId", verificationId);
-                                                                        intent.putExtra("email", email);
-                                                                        intent.putExtra("password", password);
-                                                                        intent.putExtra("name", name);
-                                                                        intent.putExtra("status", status);
-                                                                        intent.putExtra("phoneNumber", phoneNumber);
-                                                                        intent.putExtra("profileUri", imageUri);
-                                                                        intent.putExtra("uid", uid);
-                                                                        startActivity(intent);
-                                                                        finish();
-                                                                    }
-                                                                };
+                                                                        @Override
+                                                                        public void onCodeSent(String verificationId, PhoneAuthProvider.ForceResendingToken token) {
+                                                                            progressDialog.dismiss();
+                                                                            Intent intent = new Intent(ProfilePage.this, PhoneVerification.class);
+                                                                            intent.putExtra("verificationId", verificationId);
+                                                                            intent.putExtra("email", email);
+                                                                            intent.putExtra("password", password);
+                                                                            intent.putExtra("name", name);
+                                                                            intent.putExtra("status", status);
+                                                                            intent.putExtra("phoneNumber", phoneNumber);
+                                                                            intent.putExtra("profileUri", imageUri);
+                                                                            intent.putExtra("uid", uid);
+                                                                            startActivity(intent);
+                                                                            finish();
+                                                                        }
+                                                                    };
 
-                                                                PhoneAuthOptions options =
-                                                                        PhoneAuthOptions.newBuilder(mAuth)
-                                                                                .setPhoneNumber("+91" + phoneNumber)
-                                                                                .setTimeout(60L, TimeUnit.SECONDS)
-                                                                                .setActivity(ProfilePage.this)
-                                                                                .setCallbacks(mCallbacks)
-                                                                                .build();
-                                                                PhoneAuthProvider.verifyPhoneNumber(options);
+                                                                    PhoneAuthOptions options =
+                                                                            PhoneAuthOptions.newBuilder(mAuth)
+                                                                                    .setPhoneNumber("+91" + phoneNumber)
+                                                                                    .setTimeout(60L, TimeUnit.SECONDS)
+                                                                                    .setActivity(ProfilePage.this)
+                                                                                    .setCallbacks(mCallbacks)
+                                                                                    .build();
+                                                                    PhoneAuthProvider.verifyPhoneNumber(options);
 
-                                                            }
-                                                        });
+                                                                }
+                                                            });
+                                                        }
                                                     }
-                                                }
-                                            });
+                                                });
+                                            } catch (IOException e) {
+                                                e.printStackTrace();
+                                            }
                                         }
                                     }
 

@@ -19,7 +19,7 @@ Login and Registration with OTP Registration |  Main Page of the Application
 :-------------------------:|:-------------------------:
 <img src="https://user-images.githubusercontent.com/42493387/219648078-c7f7c5ce-586b-46f3-9ec8-9c3f047d2e57.jpeg"  width="250" height="450">  |  <img src="https://user-images.githubusercontent.com/42493387/219648091-245799cf-06f3-48ac-950f-2e6f433f6976.jpeg"  width="250" height="450">
 
-  Send Videos           | 
+  Here you can add photos of the product and share it with your friends on social media chats | 
 :-------------------------:|
 <img src="https://user-images.githubusercontent.com/42493387/219648482-1ef57490-c66a-45e0-9fb7-8cf8be511737.jpeg"  width="250" height="450">  
 
